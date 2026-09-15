@@ -1,10 +1,12 @@
-# 🩺 NutriAgent AI: Qwen Multi-Agent Clinical Lab & Precision Nutrition System
+# NutriAgent AI: Qwen Multi-Agent Clinical Lab & Precision Nutrition System
 
-An end-to-end agentic application that transforms medical lab reports (PDFs) into personalized, clinically validated diet plans and physician briefs using local **Qwen2.5** models on **Ollama**.
+NutriAgent AI is a fully local, privacy-respecting clinical intelligence platform that converts raw medical laboratory reports into actionable, personalized nutrition therapy — no cloud API calls, no data leaves your machine.
+
+Three specialized Qwen2.5 agents run sequentially on your local Ollama instance: the Analysis Agent performs deep pathophysiological risk stratification of your biomarkers; the Audit Gate cross-checks every dietary recommendation against clinical contraindications and produces a Doctor Brief; and the Nutrition Agent generates a tailored 7-day meal plan grounded in deterministic caloric and macronutrient calculations. An interactive Q&A consultant lets you ask any follow-up question about your report in plain language.
 
 ---
 
-## 🏗️ Architecture & Pipeline Flow
+## Architecture & Pipeline Flow
 
 ```
 PDF Upload
@@ -28,7 +30,7 @@ Streamlit Interactive Dashboard & Export
 
 ---
 
-## 🤖 The 3 Specialized Qwen Agents
+## The 3 Specialized Qwen Agents
 
 | Agent | Responsibility | Core Outputs |
 | :--- | :--- | :--- |
@@ -38,29 +40,26 @@ Streamlit Interactive Dashboard & Export
 
 ---
 
-## ⚙️ Deterministic Clinical Engine
+## Deterministic Clinical Engine
 
 Before the Nutrition Agent generates meals, a deterministic rules engine calculates:
 - **BMR & TDEE**: Accurate Mifflin-St Jeor formula adjusted for patient BMI and activity.
 - **Biomarker-Driven Protocols**:
-  - **Prediabetes / Diabetes**: Low-GI, 40% Carbs, Fiber $\ge$ 35g/day, restricted sugars.
-  - **Dyslipidemia**: Cardioprotective Mediterranean, SFA $<$ 7%, high MUFA/PUFA, zero trans-fats.
-  - **Hypertension (DASH)**: Sodium cap $<$ 1800 mg/day, high potassium-to-sodium ratio.
-  - **Renal Impairment (eGFR $<$ 90)**: Protein moderation ($0.8\text{ g/kg}$), phosphorus/sodium control.
-  - **Hyperuricemia (Gout)**: Low purine ($< 100\text{ mg/day}$), zero high-fructose corn syrup, hydration $\ge 3.0\text{ L/day}$.
+  - **Prediabetes / Diabetes**: Low-GI, 40% Carbs, Fiber >= 35g/day, restricted sugars.
+  - **Dyslipidemia**: Cardioprotective Mediterranean, SFA < 7%, high MUFA/PUFA, zero trans-fats.
+  - **Hypertension (DASH)**: Sodium cap < 1800 mg/day, high potassium-to-sodium ratio.
+  - **Renal Impairment (eGFR < 90)**: Protein moderation (0.8 g/kg), phosphorus/sodium control.
+  - **Hyperuricemia (Gout)**: Low purine (< 100 mg/day), zero high-fructose corn syrup, hydration >= 3.0 L/day.
 
 ---
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 ### 1. Prerequisites & Ollama Setup
 Install and start [Ollama](https://ollama.ai/), then pull the Qwen2.5 model:
 
 ```bash
-# Pull Qwen 2.5 (choose 7B, 14B, or 32B based on your GPU/RAM)
 ollama pull qwen2.5:7b
-
-# Ensure Ollama is running
 ollama serve
 ```
 
@@ -76,11 +75,11 @@ streamlit run app.py
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
-- `app.py` — Main Streamlit application with drag-and-drop PDF upload, visual pipeline tracker, tabbed analysis, and export tools.
-- `agents.py` — Ollama client and the 3 Qwen agents (`AnalysisAgent`, `NutritionAgent`, `EvaluationAgent`) with structured clinical prompts and built-in offline fallbacks.
-- `extractor.py` — High-precision PDF parser for medical lab reports, extracting demographics and 25+ standard biomarkers with reference ranges.
+- `app.py` — Main Streamlit application with PDF upload, animated pipeline tracker, tabbed results, and EHR export.
+- `agents.py` — Ollama client and 4 Qwen agents (Analysis, Nutrition, Evaluation, Consultant Q&A) with offline fallbacks.
+- `extractor.py` — High-precision PDF parser extracting demographics and 25+ standard biomarkers with reference ranges.
 - `deterministic_nutrition.py` — Scientific clinical rules engine (BMR, TDEE, macros, contraindications).
 - `generate_sample_pdf.py` — Utility to generate realistic clinical lab report PDFs.
 - `sample_blood_test_report.pdf` — Sample PDF lab report for instant testing.
@@ -88,9 +87,9 @@ streamlit run app.py
 
 ---
 
-## 🧪 Testing with Sample Data
+## Testing with Sample Data
 
 If you do not have a PDF report ready:
 1. Open the app (`streamlit run app.py`).
-2. In the sidebar, click **"📄 Load Pre-set Clinical Lab Report"** or upload `sample_blood_test_report.pdf`.
-3. Click **"🚀 Execute Full Agentic Pipeline"** to watch the multi-agent pipeline execute live.
+2. Upload `sample_blood_test_report.pdf` from the project folder.
+3. Click **Run Multi-Agent Pipeline** to watch the animated agent execution monitor run live.
