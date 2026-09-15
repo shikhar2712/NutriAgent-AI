@@ -1,2 +1,3 @@
-# NutriAgent-AI
-Multi-agent clinical AI that transforms medical lab PDFs into personalized nutrition plans using local Qwen2.5 via Ollama.
+NutriAgent AI is a fully local, privacy-respecting clinical intelligence platform that converts raw medical laboratory reports into actionable, personalized nutrition therapy — no cloud API calls, no data leaves your machine.
+
+Three specialized Qwen2.5 agents run sequentially on your local Ollama instance: the Analysis Agent performs deep pathophysiological risk stratification of your biomarkers; the Audit Gate cross-checks every dietary recommendation against clinical contraindications and produces a Doctor Brief; and the Nutrition Agent generates a tailored 7-day meal plan grounded in deterministic caloric and macronutrient calculations. An interactive Q&A consultant lets you ask any follow-up question about your report in plain language.
