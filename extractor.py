@@ -20,37 +20,153 @@ except ImportError:
     PYPDF_AVAILABLE = False
 
 
-# Reference ranges for common clinical biomarkers
+# Reference ranges for common clinical biomarkers with plain-language descriptions and organ categories
 STANDARD_REFERENCE_RANGES = {
-    "fasting_glucose": {"min": 70, "max": 99, "unit": "mg/dL", "name": "Fasting Blood Glucose"},
-    "postprandial_glucose": {"min": 70, "max": 140, "unit": "mg/dL", "name": "Postprandial Glucose"},
-    "hba1c": {"min": 4.0, "max": 5.6, "unit": "%", "name": "HbA1c (Glycated Hemoglobin)"},
-    "total_cholesterol": {"min": 125, "max": 200, "unit": "mg/dL", "name": "Total Cholesterol"},
-    "ldl_cholesterol": {"min": 0, "max": 100, "unit": "mg/dL", "name": "LDL Cholesterol"},
-    "hdl_cholesterol_male": {"min": 40, "max": 100, "unit": "mg/dL", "name": "HDL Cholesterol (Male)"},
-    "hdl_cholesterol_female": {"min": 50, "max": 100, "unit": "mg/dL", "name": "HDL Cholesterol (Female)"},
-    "triglycerides": {"min": 0, "max": 150, "unit": "mg/dL", "name": "Triglycerides"},
-    "creatinine": {"min": 0.6, "max": 1.2, "unit": "mg/dL", "name": "Serum Creatinine"},
-    "egfr": {"min": 90, "max": 150, "unit": "mL/min/1.73m²", "name": "eGFR"},
-    "bun": {"min": 7, "max": 20, "unit": "mg/dL", "name": "Blood Urea Nitrogen (BUN)"},
-    "uric_acid_male": {"min": 3.4, "max": 7.0, "unit": "mg/dL", "name": "Uric Acid (Male)"},
-    "uric_acid_female": {"min": 2.4, "max": 6.0, "unit": "mg/dL", "name": "Uric Acid (Female)"},
-    "alt_sgpt": {"min": 7, "max": 56, "unit": "U/L", "name": "ALT (SGPT)"},
-    "ast_sgot": {"min": 10, "max": 40, "unit": "U/L", "name": "AST (SGOT)"},
-    "bilirubin_total": {"min": 0.2, "max": 1.2, "unit": "mg/dL", "name": "Total Bilirubin"},
-    "hemoglobin_male": {"min": 13.5, "max": 17.5, "unit": "g/dL", "name": "Hemoglobin (Male)"},
-    "hemoglobin_female": {"min": 12.0, "max": 15.5, "unit": "g/dL", "name": "Hemoglobin (Female)"},
-    "wbc_count": {"min": 4.5, "max": 11.0, "unit": "10^3/µL", "name": "White Blood Cell Count"},
-    "platelets": {"min": 150, "max": 450, "unit": "10^3/µL", "name": "Platelet Count"},
-    "vitamin_d": {"min": 30, "max": 100, "unit": "ng/mL", "name": "Vitamin D (25-OH)"},
-    "vitamin_b12": {"min": 200, "max": 900, "unit": "pg/mL", "name": "Vitamin B12"},
-    "serum_ferritin": {"min": 20, "max": 250, "unit": "ng/mL", "name": "Serum Ferritin"},
-    "tsh": {"min": 0.4, "max": 4.0, "unit": "µIU/mL", "name": "Thyroid Stimulating Hormone (TSH)"},
-    "systolic_bp": {"min": 90, "max": 120, "unit": "mmHg", "name": "Systolic Blood Pressure"},
-    "diastolic_bp": {"min": 60, "max": 80, "unit": "mmHg", "name": "Diastolic Blood Pressure"},
-    "serum_potassium": {"min": 3.5, "max": 5.0, "unit": "mEq/L", "name": "Serum Potassium"},
-    "serum_sodium": {"min": 135, "max": 145, "unit": "mEq/L", "name": "Serum Sodium"},
-    "serum_calcium": {"min": 8.5, "max": 10.2, "unit": "mg/dL", "name": "Serum Calcium"}
+    "fasting_glucose": {
+        "min": 70, "max": 99, "unit": "mg/dL", "name": "Fasting Blood Glucose",
+        "category": "Blood Sugar & Diabetes",
+        "plain_desc": "Blood sugar after an overnight fast. Key early indicator for diabetes and insulin resistance."
+    },
+    "postprandial_glucose": {
+        "min": 70, "max": 140, "unit": "mg/dL", "name": "Postprandial Glucose",
+        "category": "Blood Sugar & Diabetes",
+        "plain_desc": "Blood sugar 2 hours after a meal. Shows how efficiently your body clears carbohydrates."
+    },
+    "hba1c": {
+        "min": 4.0, "max": 5.6, "unit": "%", "name": "HbA1c (Glycated Hemoglobin)",
+        "category": "Blood Sugar & Diabetes",
+        "plain_desc": "Your 3-month average blood sugar score. Standard metric for diagnosing prediabetes and diabetes."
+    },
+    "total_cholesterol": {
+        "min": 125, "max": 200, "unit": "mg/dL", "name": "Total Cholesterol",
+        "category": "Heart & Lipids",
+        "plain_desc": "Total amount of cholesterol circulating in your bloodstream."
+    },
+    "ldl_cholesterol": {
+        "min": 0, "max": 100, "unit": "mg/dL", "name": "LDL Cholesterol (Bad)",
+        "category": "Heart & Lipids",
+        "plain_desc": "'Bad' cholesterol that can form plaque in blood vessels when elevated."
+    },
+    "hdl_cholesterol_male": {
+        "min": 40, "max": 100, "unit": "mg/dL", "name": "HDL Cholesterol (Good, Male)",
+        "category": "Heart & Lipids",
+        "plain_desc": "'Good' protective cholesterol that sweeps excess fats out of your arteries."
+    },
+    "hdl_cholesterol_female": {
+        "min": 50, "max": 100, "unit": "mg/dL", "name": "HDL Cholesterol (Good, Female)",
+        "category": "Heart & Lipids",
+        "plain_desc": "'Good' protective cholesterol that sweeps excess fats out of your arteries."
+    },
+    "triglycerides": {
+        "min": 0, "max": 150, "unit": "mg/dL", "name": "Triglycerides",
+        "category": "Heart & Lipids",
+        "plain_desc": "Fat molecules from unused calories. High levels increase heart and liver risk."
+    },
+    "creatinine": {
+        "min": 0.6, "max": 1.2, "unit": "mg/dL", "name": "Serum Creatinine",
+        "category": "Kidney & Uric Acid",
+        "plain_desc": "Natural waste product filtered by healthy kidneys. Rises if kidney filtration slows down."
+    },
+    "egfr": {
+        "min": 90, "max": 150, "unit": "mL/min/1.73m²", "name": "eGFR (Kidney Filtration)",
+        "category": "Kidney & Uric Acid",
+        "plain_desc": "Estimated kidney filtration efficiency. Higher (above 90) means robust kidney cleansing."
+    },
+    "bun": {
+        "min": 7, "max": 20, "unit": "mg/dL", "name": "Blood Urea Nitrogen (BUN)",
+        "category": "Kidney & Uric Acid",
+        "plain_desc": "Measures waste nitrogen from protein digestion; reflects kidney and hydration status."
+    },
+    "uric_acid_male": {
+        "min": 3.4, "max": 7.0, "unit": "mg/dL", "name": "Uric Acid (Male)",
+        "category": "Kidney & Uric Acid",
+        "plain_desc": "Waste from purine breakdown. High levels can cause painful gout or kidney stones."
+    },
+    "uric_acid_female": {
+        "min": 2.4, "max": 6.0, "unit": "mg/dL", "name": "Uric Acid (Female)",
+        "category": "Kidney & Uric Acid",
+        "plain_desc": "Waste from purine breakdown. High levels can cause painful gout or kidney stones."
+    },
+    "alt_sgpt": {
+        "min": 7, "max": 56, "unit": "U/L", "name": "ALT (SGPT)",
+        "category": "Liver Function",
+        "plain_desc": "Liver-specific enzyme. Elevated values signal liver inflammation or fatty liver stress."
+    },
+    "ast_sgot": {
+        "min": 10, "max": 40, "unit": "U/L", "name": "AST (SGOT)",
+        "category": "Liver Function",
+        "plain_desc": "Enzyme found in liver and muscle tissue; rises during cellular stress or injury."
+    },
+    "bilirubin_total": {
+        "min": 0.2, "max": 1.2, "unit": "mg/dL", "name": "Total Bilirubin",
+        "category": "Liver Function",
+        "plain_desc": "Yellow pigment from red blood cell breakdown; reflects liver processing and bile flow."
+    },
+    "hemoglobin_male": {
+        "min": 13.5, "max": 17.5, "unit": "g/dL", "name": "Hemoglobin (Male)",
+        "category": "Blood Count (CBC)",
+        "plain_desc": "Oxygen-carrying protein in red blood cells. Low values indicate anemia and fatigue."
+    },
+    "hemoglobin_female": {
+        "min": 12.0, "max": 15.5, "unit": "g/dL", "name": "Hemoglobin (Female)",
+        "category": "Blood Count (CBC)",
+        "plain_desc": "Oxygen-carrying protein in red blood cells. Low values indicate anemia and fatigue."
+    },
+    "wbc_count": {
+        "min": 4.5, "max": 11.0, "unit": "10^3/µL", "name": "White Blood Cell Count",
+        "category": "Blood Count (CBC)",
+        "plain_desc": "Immune defense cells. High values indicate infection or inflammation; low means lowered immunity."
+    },
+    "platelets": {
+        "min": 150, "max": 450, "unit": "10^3/µL", "name": "Platelet Count",
+        "category": "Blood Count (CBC)",
+        "plain_desc": "Cell fragments essential for normal blood clotting and wound healing."
+    },
+    "vitamin_d": {
+        "min": 30, "max": 100, "unit": "ng/mL", "name": "Vitamin D (25-OH)",
+        "category": "Vitamins & Minerals",
+        "plain_desc": "Crucial hormone-vitamin for calcium absorption, bone strength, immunity, and insulin sensitivity."
+    },
+    "vitamin_b12": {
+        "min": 200, "max": 900, "unit": "pg/mL", "name": "Vitamin B12",
+        "category": "Vitamins & Minerals",
+        "plain_desc": "Essential for nerve health, DNA synthesis, and red blood cell formation."
+    },
+    "serum_ferritin": {
+        "min": 20, "max": 250, "unit": "ng/mL", "name": "Serum Ferritin (Iron Stores)",
+        "category": "Vitamins & Minerals",
+        "plain_desc": "Your body's master iron storage bank. Low levels mean iron deficiency before anemia appears."
+    },
+    "tsh": {
+        "min": 0.4, "max": 4.0, "unit": "µIU/mL", "name": "Thyroid Stimulating Hormone (TSH)",
+        "category": "Thyroid & Hormones",
+        "plain_desc": "Brain signal that regulates thyroid speed. High TSH means thyroid is sluggish (hypothyroid)."
+    },
+    "systolic_bp": {
+        "min": 90, "max": 120, "unit": "mmHg", "name": "Systolic Blood Pressure",
+        "category": "Vitals & Blood Pressure",
+        "plain_desc": "Pressure in arteries when heart beats (top blood pressure number)."
+    },
+    "diastolic_bp": {
+        "min": 60, "max": 80, "unit": "mmHg", "name": "Diastolic Blood Pressure",
+        "category": "Vitals & Blood Pressure",
+        "plain_desc": "Pressure in arteries when heart rests between beats (bottom blood pressure number)."
+    },
+    "serum_potassium": {
+        "min": 3.5, "max": 5.0, "unit": "mEq/L", "name": "Serum Potassium (K+)",
+        "category": "Electrolytes",
+        "plain_desc": "Vital mineral for heart rhythm, muscle contractions, and fluid balance."
+    },
+    "serum_sodium": {
+        "min": 135, "max": 145, "unit": "mEq/L", "name": "Serum Sodium (Na+)",
+        "category": "Electrolytes",
+        "plain_desc": "Main mineral for fluid volume and blood pressure regulation."
+    },
+    "serum_calcium": {
+        "min": 8.5, "max": 10.2, "unit": "mg/dL", "name": "Serum Calcium",
+        "category": "Electrolytes",
+        "plain_desc": "Essential for bone density, nerve signaling, and muscle function."
+    }
 }
 
 
@@ -413,7 +529,9 @@ def extract_biomarkers(raw_text: str, gender: str = "Male") -> Dict[str, Any]:
                 "range": f"{min_val} - {max_val} {unit}",
                 "min": min_val,
                 "max": max_val,
-                "status": status
+                "status": status,
+                "category": ref_info.get("category", "General Metabolic"),
+                "plain_desc": ref_info.get("plain_desc", "Clinical biomarker measuring metabolic health.")
             }
 
     return biomarkers
@@ -435,14 +553,42 @@ def build_health_profile(raw_text: str) -> Dict[str, Any]:
     fbs = biomarkers.get("fasting_glucose", {}).get("value")
     if hba1c:
         if hba1c >= 6.5:
-            clinical_flags.append({"condition": "Type 2 Diabetes Mellitus", "severity": "High", "marker": f"HbA1c: {hba1c}%"})
+            clinical_flags.append({
+                "condition": "Type 2 Diabetes Mellitus",
+                "severity": "High",
+                "marker": f"HbA1c: {hba1c}%",
+                "organ": "Blood Sugar / Metabolism",
+                "plain_meaning": "Average blood sugar over the last 3 months is in the diabetic range.",
+                "action_tip": "Focus on low-glycemic complex carbs, high fiber (>35g/day), and zero sugary beverages."
+            })
         elif hba1c >= 5.7:
-            clinical_flags.append({"condition": "Prediabetes / Impaired Fasting Glucose", "severity": "Moderate", "marker": f"HbA1c: {hba1c}%"})
+            clinical_flags.append({
+                "condition": "Prediabetes / Impaired Fasting Glucose",
+                "severity": "Moderate",
+                "marker": f"HbA1c: {hba1c}%",
+                "organ": "Blood Sugar / Metabolism",
+                "plain_meaning": "Blood sugar is slightly elevated above normal. Fully reversible with dietary and lifestyle adjustments.",
+                "action_tip": "Replace refined carbs with steel-cut oats, quinoa, lentils, and daily light physical activity."
+            })
     elif fbs:
         if fbs >= 126:
-            clinical_flags.append({"condition": "Hyperglycemia / Diabetes Suspect", "severity": "High", "marker": f"FBS: {fbs} mg/dL"})
+            clinical_flags.append({
+                "condition": "Hyperglycemia / Diabetes Suspect",
+                "severity": "High",
+                "marker": f"FBS: {fbs} mg/dL",
+                "organ": "Blood Sugar / Metabolism",
+                "plain_meaning": "Fasting blood sugar is higher than standard clinical thresholds.",
+                "action_tip": "Adopt low-glycemic, fiber-rich meals and consult physician for confirmatory HbA1c test."
+            })
         elif fbs >= 100:
-            clinical_flags.append({"condition": "Impaired Fasting Glucose", "severity": "Moderate", "marker": f"FBS: {fbs} mg/dL"})
+            clinical_flags.append({
+                "condition": "Impaired Fasting Glucose",
+                "severity": "Moderate",
+                "marker": f"FBS: {fbs} mg/dL",
+                "organ": "Blood Sugar / Metabolism",
+                "plain_meaning": "Fasting glucose is in the prediabetes warning zone.",
+                "action_tip": "Avoid late-night heavy snacking and minimize refined carbohydrates and sweet drinks."
+            })
 
     # Lipids & Cardiovascular
     chol = biomarkers.get("total_cholesterol", {}).get("value")
@@ -455,57 +601,141 @@ def build_health_profile(raw_text: str) -> Dict[str, Any]:
         if chol and chol > 200: flag_details.append(f"Chol: {chol}")
         if ldl and ldl > 100: flag_details.append(f"LDL: {ldl}")
         if tg and tg > 150: flag_details.append(f"TG: {tg}")
-        clinical_flags.append({"condition": "Dyslipidemia / Hypercholesterolemia", "severity": "Moderate", "marker": ", ".join(flag_details)})
+        clinical_flags.append({
+            "condition": "Dyslipidemia / Elevated Cholesterol",
+            "severity": "Moderate",
+            "marker": ", ".join(flag_details),
+            "organ": "Heart & Arteries",
+            "plain_meaning": "Elevated circulating bad fats (LDL/Triglycerides) that can stress cardiovascular vessels over time.",
+            "action_tip": "Switch from saturated/fried fats to extra virgin olive oil, walnuts, chia seeds, and wild fish."
+        })
 
     # Renal
     creatinine = biomarkers.get("creatinine", {}).get("value")
     egfr = biomarkers.get("egfr", {}).get("value")
     if (creatinine and creatinine > 1.2) or (egfr and egfr < 60):
-        clinical_flags.append({"condition": "Renal Impairment / CKD Risk", "severity": "High" if (egfr and egfr < 45) else "Moderate", "marker": f"Creatinine: {creatinine}, eGFR: {egfr}"})
+        clinical_flags.append({
+            "condition": "Renal Impairment / CKD Risk",
+            "severity": "High" if (egfr and egfr < 45) else "Moderate",
+            "marker": f"Creatinine: {creatinine}, eGFR: {egfr}",
+            "organ": "Kidneys & Filtration",
+            "plain_meaning": "Kidney filtering rate is slightly reduced or serum waste levels are elevated.",
+            "action_tip": "Moderate daily protein to ~0.8g/kg, limit high-sodium foods, and maintain clean hydration."
+        })
 
     # Uric Acid / Gout
     uric_acid = biomarkers.get("uric_acid", {}).get("value")
     if uric_acid and uric_acid > 7.0:
-        clinical_flags.append({"condition": "Hyperuricemia (Gout Risk)", "severity": "Moderate", "marker": f"Uric Acid: {uric_acid} mg/dL"})
+        clinical_flags.append({
+            "condition": "Hyperuricemia (Uric Acid & Gout Risk)",
+            "severity": "Moderate",
+            "marker": f"Uric Acid: {uric_acid} mg/dL",
+            "organ": "Uric Acid & Joints",
+            "plain_meaning": "High uric acid in blood; can crystallize in joints (gout) or form kidney stones if unmanaged.",
+            "action_tip": "Drink at least 3.0L water daily, avoid beer/spirits and high-purine organ meats, enjoy tart cherries."
+        })
 
     # Liver
     alt = biomarkers.get("alt_sgpt", {}).get("value")
     ast = biomarkers.get("ast_sgot", {}).get("value")
     if (alt and alt > 56) or (ast and ast > 40):
         severity = "High" if (alt and alt > 100) else "Moderate"
-        clinical_flags.append({"condition": "Elevated Transaminases (Hepatic Stress / NAFLD Risk)", "severity": severity, "marker": f"ALT: {alt}, AST: {ast}"})
+        clinical_flags.append({
+            "condition": "Elevated Liver Enzymes (Hepatic Stress / NAFLD)",
+            "severity": severity,
+            "marker": f"ALT: {alt}, AST: {ast}",
+            "organ": "Liver Function",
+            "plain_meaning": "Liver cells are experiencing mild metabolic stress or inflammation (common in fatty liver).",
+            "action_tip": "Eliminate alcohol and high-fructose syrups; add cruciferous greens (broccoli), green tea, and turmeric."
+        })
 
     # Thyroid (TSH)
     tsh = biomarkers.get("tsh", {}).get("value")
     if tsh and tsh > 4.5:
-        clinical_flags.append({"condition": "Elevated TSH (Borderline / Subclinical Hypothyroidism)", "severity": "Mild" if tsh < 8.0 else "Moderate", "marker": f"TSH: {tsh} µIU/mL"})
+        clinical_flags.append({
+            "condition": "Elevated TSH (Sluggish Thyroid / Hypothyroidism)",
+            "severity": "Mild" if tsh < 8.0 else "Moderate",
+            "marker": f"TSH: {tsh} µIU/mL",
+            "organ": "Thyroid & Metabolism",
+            "plain_meaning": "Pituitary gland is working harder to stimulate a sluggish thyroid gland.",
+            "action_tip": "Eat 1-2 Brazil nuts daily for selenium, ensure adequate zinc/iodine, and cook cruciferous veggies thoroughly."
+        })
     elif tsh and tsh < 0.4:
-        clinical_flags.append({"condition": "Low TSH (Hyperthyroidism Risk)", "severity": "Moderate", "marker": f"TSH: {tsh} µIU/mL"})
+        clinical_flags.append({
+            "condition": "Low TSH (Overactive Thyroid Risk)",
+            "severity": "Moderate",
+            "marker": f"TSH: {tsh} µIU/mL",
+            "organ": "Thyroid & Metabolism",
+            "plain_meaning": "Thyroid hormone levels may be elevated, speeding up metabolic processes.",
+            "action_tip": "Consult physician for free T3/T4 testing and monitor caffeine intake."
+        })
 
     # Electrolytes (Potassium)
     k_val = biomarkers.get("serum_potassium", {}).get("value")
     if k_val and k_val < 3.5:
-        clinical_flags.append({"condition": "Hypokalemia (Low Serum Potassium)", "severity": "Mild" if k_val >= 3.0 else "High", "marker": f"K+: {k_val} mEq/L"})
+        clinical_flags.append({
+            "condition": "Hypokalemia (Low Potassium)",
+            "severity": "Mild" if k_val >= 3.0 else "High",
+            "marker": f"K+: {k_val} mEq/L",
+            "organ": "Electrolytes & Heart Rhythm",
+            "plain_meaning": "Low blood potassium, which can cause muscle cramps, weakness, or irregular heartbeats.",
+            "action_tip": "Incorporate potassium-rich tender coconut water, baked sweet potato, spinach, and avocado."
+        })
     elif k_val and k_val > 5.0:
-        clinical_flags.append({"condition": "Hyperkalemia (High Serum Potassium)", "severity": "High", "marker": f"K+: {k_val} mEq/L"})
+        clinical_flags.append({
+            "condition": "Hyperkalemia (High Potassium)",
+            "severity": "High",
+            "marker": f"K+: {k_val} mEq/L",
+            "organ": "Electrolytes & Heart Rhythm",
+            "plain_meaning": "High potassium in blood; requires dietary care if kidneys are filtering slowly.",
+            "action_tip": "Moderate high-potassium supplements and follow renal dietitian guidance."
+        })
 
     # Blood Pressure
     sbp = demographics.get("systolic_bp")
     dbp = demographics.get("diastolic_bp")
     if sbp and dbp:
         if sbp >= 140 or dbp >= 90:
-            clinical_flags.append({"condition": "Stage 2 Hypertension", "severity": "High", "marker": f"{sbp}/{dbp} mmHg"})
+            clinical_flags.append({
+                "condition": "Stage 2 Hypertension",
+                "severity": "High",
+                "marker": f"{sbp}/{dbp} mmHg",
+                "organ": "Blood Pressure & Vessels",
+                "plain_meaning": "Blood pressure is significantly elevated, putting excess strain on heart and arteries.",
+                "action_tip": "Strict DASH protocol: limit sodium <1800mg/day, boost potassium/magnesium, and reduce stress."
+            })
         elif sbp >= 130 or dbp >= 80:
-            clinical_flags.append({"condition": "Stage 1 Hypertension", "severity": "Moderate", "marker": f"{sbp}/{dbp} mmHg"})
+            clinical_flags.append({
+                "condition": "Stage 1 Hypertension",
+                "severity": "Moderate",
+                "marker": f"{sbp}/{dbp} mmHg",
+                "organ": "Blood Pressure & Vessels",
+                "plain_meaning": "Blood pressure is in the mild high range; very responsive to sodium moderation and diet.",
+                "action_tip": "Reduce processed/packaged salty foods, use fresh herbs/lemon for seasoning, eat leafy greens."
+            })
 
     # Vitamins
     vit_d = biomarkers.get("vitamin_d", {}).get("value")
     if vit_d and vit_d < 30:
-        clinical_flags.append({"condition": "Vitamin D Deficiency", "severity": "Mild" if vit_d >= 20 else "Moderate", "marker": f"Vit D: {vit_d} ng/mL"})
+        clinical_flags.append({
+            "condition": "Vitamin D Deficiency",
+            "severity": "Mild" if vit_d >= 20 else "Moderate",
+            "marker": f"Vit D: {vit_d} ng/mL",
+            "organ": "Immunity & Bone Health",
+            "plain_meaning": "Low circulating Vitamin D, affecting bone density, immune strength, and insulin signaling.",
+            "action_tip": "Get 15-20 min gentle morning sunlight, consume fortified foods/egg yolks, and discuss D3 supplementation."
+        })
 
     vit_b12 = biomarkers.get("vitamin_b12", {}).get("value")
     if vit_b12 and vit_b12 < 200:
-        clinical_flags.append({"condition": "Vitamin B12 Deficiency", "severity": "Moderate", "marker": f"B12: {vit_b12} pg/mL"})
+        clinical_flags.append({
+            "condition": "Vitamin B12 Deficiency",
+            "severity": "Moderate",
+            "marker": f"B12: {vit_b12} pg/mL",
+            "organ": "Nerve & Energy Vitality",
+            "plain_meaning": "Low B12 stores can lead to fatigue, brain fog, and low red blood cell production.",
+            "action_tip": "Consume fortified nutritional yeast, dairy/eggs/lean meats, or discuss sublingual B12 with your doctor."
+        })
 
     return {
         "validation": validation,

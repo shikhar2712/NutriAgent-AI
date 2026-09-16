@@ -5,7 +5,7 @@ NutriAgent AI is a clinical-grade medical and precision nutrition dashboard. The
 
 ---
 
-## 🎨 Color Palette
+## Color Palette
 
 | Token | Hex | Usage |
 | :--- | :--- | :--- |
@@ -19,18 +19,18 @@ NutriAgent AI is a clinical-grade medical and precision nutrition dashboard. The
 
 ---
 
-##  typography & Hierarchy
+## Typography & Hierarchy
 - **Title / H1**: Bold, clean sans-serif, deep slate (`#0F172A`), tight tracking.
-- **Section Headers (H2/H3)**: Clean semi-bold with contextual emoji iconography (e.g. `🩺`, `🧠`, `🥗`, `🛡️`).
+- **Section Headers (H2/H3)**: Clean semi-bold, high-contrast, structured typographic hierarchy.
 - **Body / Biomarker Data**: High readability, monospaced or structured tabular numbers for values and reference ranges.
 - **Micro-labels / Metadata**: Uppercase, small size (0.75rem), muted slate (`#64748B`), tracking +0.5px.
 
 ---
 
-## 🧩 UI Components & Layout Guidelines
+## UI Components & Layout Guidelines
 
 1. **Pipeline Visualizer**:
-   - Sequential numbered steps showing current stage pulse, past steps in green with checkmarks, future steps in muted gray.
+   - Sequential numbered steps showing current stage pulse, past steps in green, future steps in muted gray.
 2. **Stat & Biomarker Cards**:
    - Clean, border-first cards with subtle shadow (`0 1px 3px rgba(0,0,0,0.05)`).
    - High contrast status pills:
