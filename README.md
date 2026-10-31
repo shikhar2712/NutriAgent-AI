@@ -1,95 +1,120 @@
-# NutriAgent AI: Qwen Multi-Agent Clinical Lab & Precision Nutrition System
+# NutriAgent AI
 
-NutriAgent AI is a fully local, privacy-respecting clinical intelligence platform that converts raw medical laboratory reports into actionable, personalized nutrition therapy — no cloud API calls, no data leaves your machine.
+I built NutriAgent to turn a blood-test PDF into something a person can actually act on: which values are out of range, how many calories and how much protein, carbs and fat they need, and a 7-day Indian meal plan that respects their results, followed by a short memo they can hand to a doctor.
 
-Three specialized Qwen2.5 agents run sequentially on your local Ollama instance: the Analysis Agent performs deep pathophysiological risk stratification of your biomarkers; the Audit Gate cross-checks every dietary recommendation against clinical contraindications and produces a Doctor Brief; and the Nutrition Agent generates a tailored 7-day meal plan grounded in deterministic caloric and macronutrient calculations. An interactive Q&A consultant lets you ask any follow-up question about your report in plain language.
+It runs on my own machine. The numbers come from a deterministic rules engine, and a local Qwen2.5 model (through Ollama) only writes the explanations around them. Nothing is sent to a cloud API. There is also a standalone Android app that does the whole thing on the phone.
+
+> **Educational project, not a medical device.** It gives general nutrition information worked out from the values in a report. It does not diagnose or treat anything. Anything it produces should be reviewed by a doctor or registered dietitian before you act on it.
+
+| Web app (Streamlit) | Android app |
+| :---: | :---: |
+| <img src="docs/screenshots/nutri-web-05-tab1-analysis.png" width="420"> | <img src="docs/screenshots/app-04-overview.png" width="170"> <img src="docs/screenshots/app-06-meal-plan.png" width="170"> |
 
 ---
 
-## Architecture & Pipeline Flow
+## How it works
 
 ```
-PDF Upload
-    ↓
-Extraction (pdfplumber & pypdf)
-    ↓
-Validation & Health Profile Synthesis
-    ↓
-Qwen Analysis Agent (Pathophysiological Risk Stratification)
-    ↓
-Deterministic Nutrition Engine (BMR/TDEE, Macros, Clinical Constraints)
-    ↓
-Qwen Nutrition Agent (7-Day Tailored Meal Plan with Rationale)
-    ↓
-Qwen Evaluation Agent / Audit Gate (Contraindication & Safety Verification)
-    ↓
-Doctor Brief + Patient Empowerment Guide
-    ↓
-Streamlit Interactive Dashboard & Export
+Lab report (PDF)
+   -> Extraction            pdfplumber, pypdf as fallback
+   -> Health profile        demographics, 25+ biomarkers with reference ranges, clinical flags
+   -> Deterministic engine  Mifflin-St Jeor BMR/TDEE, macro split, stacked diet protocols
+   -> Analysis agent        risk stratification written by the LLM
+   -> Nutrition agent       7-day plan, built on the engine's targets and ICMR-NIN food tables
+   -> Audit gate            contraindication check and a Doctor Brief
+   -> Dashboard             six tabs, Markdown / JSON export, plus a chat agent for follow-up questions
 ```
 
----
+The part I care most about is that **the model never decides the clinical numbers**. Calories, macros, sodium/purine/fibre limits and the foods to avoid are computed by plain Python from the extracted values, so the same report always produces the same targets. Those targets are passed to the agents as constraints. If a protocol is flagged (low-GI for prediabetes, DASH for hypertension, low-purine for gout, renal-protective for low eGFR, and so on), the protocols stack and the strictest limit wins.
 
-## The 3 Specialized Qwen Agents
+If Ollama isn't running, every agent falls back to a template built from the deterministic output, so the app still works end to end. Only the written prose gets simpler.
 
-| Agent | Responsibility | Core Outputs |
-| :--- | :--- | :--- |
-| **1. Analysis Agent** | Deep diagnostic interpretation of extracted biomarkers, organ stress (Hepatic, Renal, Cardiovascular), and metabolic risks. | Executive Clinical Summary, Anomaly Breakdown, 3-Tier Risk Stratification, Metabolic Interconnections. |
-| **2. Nutrition Agent** | Translates clinical findings & deterministic nutrition targets into a complete therapeutic meal plan. | 7-Day Actionable Meal Schedules (Breakfast to Dinner), Therapeutic Ingredient Rationales, Functional Superfoods. |
-| **3. Evaluation Agent (Audit Gate)** | Rigorous medical audit checking contraindications, macro compliance, sodium/purine limits, and issuing handoff briefs. | Clinical Safety Score (0-100), Audit Verdict Badge, Doctor Brief (for Attending MD), Plain-Language Patient Summary. |
+### The agents
 
----
+| Agent | What it does |
+| :--- | :--- |
+| Analysis | Reads the profile and writes the clinical summary: abnormal markers, a three-tier risk breakdown, and how the markers relate. |
+| Nutrition | Turns the engine's targets and the analysis into the 7-day plan with a reason for each food. |
+| Evaluation (audit gate) | Checks the plan against the constraints and drafts the Doctor Brief and a plain-language summary. |
+| Consultant | Answers follow-up questions in chat, grounded in the report's numbers. |
 
-## Deterministic Clinical Engine
+There is also a **single-LLM baseline** and a split-panel comparison page. It runs the same question through a bare model and through the NutriAgent pipeline so the difference is easy to see.
 
-Before the Nutrition Agent generates meals, a deterministic rules engine calculates:
-- **BMR & TDEE**: Accurate Mifflin-St Jeor formula adjusted for patient BMI and activity.
-- **Biomarker-Driven Protocols**:
-  - **Prediabetes / Diabetes**: Low-GI, 40% Carbs, Fiber >= 35g/day, restricted sugars.
-  - **Dyslipidemia**: Cardioprotective Mediterranean, SFA < 7%, high MUFA/PUFA, zero trans-fats.
-  - **Hypertension (DASH)**: Sodium cap < 1800 mg/day, high potassium-to-sodium ratio.
-  - **Renal Impairment (eGFR < 90)**: Protein moderation (0.8 g/kg), phosphorus/sodium control.
-  - **Hyperuricemia (Gout)**: Low purine (< 100 mg/day), zero high-fructose corn syrup, hydration >= 3.0 L/day.
+<p align="center">
+  <img src="docs/screenshots/nutri-web-07-tab3-plan.png" width="720">
+</p>
 
----
+## Run it
 
-## Quick Start Guide
-
-### 1. Prerequisites & Ollama Setup
-Install and start [Ollama](https://ollama.ai/), then pull the Qwen2.5 model:
+### Web app
 
 ```bash
-ollama pull qwen2.5:7b
+ollama pull qwen2.5:7b          # optional, the app works without it
 ollama serve
-```
 
-### 2. Install Python Dependencies
-```bash
 pip install -r requirements.txt
-```
-
-### 3. Launch the Streamlit App
-```bash
 streamlit run app.py
 ```
 
----
+Open the app and upload `sample_blood_test_report.pdf` (a synthetic report for a made-up patient), or use your own text-based lab PDF. Scanned, image-only PDFs aren't supported because there is no OCR step.
 
-## Project Structure
+With Docker:
 
-- `app.py` — Main Streamlit application with PDF upload, animated pipeline tracker, tabbed results, and EHR export.
-- `agents.py` — Ollama client and 4 Qwen agents (Analysis, Nutrition, Evaluation, Consultant Q&A) with offline fallbacks.
-- `extractor.py` — High-precision PDF parser extracting demographics and 25+ standard biomarkers with reference ranges.
-- `deterministic_nutrition.py` — Scientific clinical rules engine (BMR, TDEE, macros, contraindications).
-- `generate_sample_pdf.py` — Utility to generate realistic clinical lab report PDFs.
-- `sample_blood_test_report.pdf` — Sample PDF lab report for instant testing.
-- `test_pipeline.py` — Comprehensive unit and end-to-end verification script.
+```bash
+docker compose up -d --build     # UI on http://localhost:8501, expects Ollama on localhost:11434
+```
 
----
+### Android app
 
-## Testing with Sample Data
+`mobile/` holds a standalone port: the extraction, nutrition engine, NIN tables and plan builder run in JavaScript inside a small native WebView shell, and the PDF is read on the phone with a bundled pdf.js. Ollama is optional there too.
 
-If you do not have a PDF report ready:
-1. Open the app (`streamlit run app.py`).
-2. Upload `sample_blood_test_report.pdf` from the project folder.
-3. Click **Run Multi-Agent Pipeline** to watch the animated agent execution monitor run live.
+The built APK is `mobile/dist/NutriAgent.apk`. Copy it to a phone and open it (Android 7+, about 0.5 MB, one `INTERNET` permission used only for the Ollama address you type in). To rebuild it, see [`mobile/README.md`](mobile/README.md).
+
+<p align="center">
+  <img src="docs/screenshots/app-05-biomarkers.png" width="190">
+  <img src="docs/screenshots/app-07-doctor-brief.png" width="190">
+  <img src="docs/screenshots/app-10-ask-tab.png" width="190">
+</p>
+
+## Tests
+
+```bash
+python3 test_pipeline.py                       # extraction, BMR/TDEE, protocols, agent fallbacks
+
+cd mobile/tests && npm install                 # pdfjs-dist, used by the PDF check
+python3 gen_fixtures.py && node parity.test.js # JS engine vs the Python original: 1033 checks
+node safety.test.js                            # allergen / diet / flag exclusions across the 7-day plan
+python3 pdf_verify.py                          # pdf.js and pdfplumber extract the same biomarkers from 3 PDFs
+```
+
+The parity tests are what I trust for the Android port: the JavaScript engine is checked against the Python code on generated fixtures, and every intentional difference is listed in [`mobile/tests/DEVIATIONS.md`](mobile/tests/DEVIATIONS.md).
+
+## Project layout
+
+| Path | Purpose |
+| :--- | :--- |
+| `app.py` | Streamlit UI and pipeline orchestration |
+| `agents.py` | Ollama client and the agents, each with an offline fallback |
+| `extractor.py` | PDF text extraction, demographics, biomarkers, clinical flags |
+| `deterministic_nutrition.py` | BMR/TDEE, macro targets, protocol stacking, constraints |
+| `indian_foods.py`, `nin_food_data.json` | 7-day Indian plan built from ICMR-NIN food tables, with GI data |
+| `extract_nin_foods.py` | Rebuilds `nin_food_data.json` from the NIN guidelines PDF (see below) |
+| `general_intake.py` | "Ask without a report": conditions and measurements parsed from one sentence |
+| `generate_sample_pdf.py` | Generates the synthetic sample report |
+| `mobile/` | Android app, JS engine, build script, parity/safety/UI tests |
+| `docs/` | [Architecture notes](docs/ARCHITECTURE.md) and screenshots |
+| `DESIGN.md` | Colours, type and component rules for the UI |
+
+**Food data.** `nin_food_data.json` was extracted from the ICMR-NIN *Dietary Guidelines for Indians*. I don't redistribute that PDF. To regenerate the JSON, download it from the NIN website, save it in the repo root as `DietaryGuidelinesforNINwebsite.pdf` and run `python extract_nin_foods.py`.
+
+## Known limits
+
+- **The audit score is not a clinical metric.** It is the number the audit model writes in its answer, and when the model is offline or no score can be parsed it falls back to a fixed placeholder (95). In the Android app the "plan self-check" only verifies the plan against the app's own rules. Neither is a clinical review.
+- Biomarker extraction is regex-based. It works on standard lab-report layouts and misses unusual ones. A marker it can't find is left out, never guessed.
+- Allergen filtering matches food names (plus Poha/Upma for nut allergy). Hidden ingredients can't be detected, so check recipes yourself.
+- I have not run the Android app on a physical device. The native shell is verified by compilation, APK signature checks, and a headless phone-sized UI run against a simulated native bridge.
+- The web app is single-patient and single-session.
+
+## Stack
+
+Python, Streamlit, pdfplumber / pypdf, pandas, ReportLab, Ollama with Qwen2.5 (7B by default); vanilla JavaScript with pdf.js for the mobile engine; a Gradle-free Android build (aapt2, javac, d8, apksigner); Docker.

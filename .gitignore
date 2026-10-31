@@ -1,10 +1,27 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.DS_Store
-.env
 .venv/
-env/
 venv/
+env/
+.env
+.ipynb_checkpoints/
+
+# Editor / OS / tooling
+.DS_Store
 *.tmp
+
+# Android build output and signing keys (build.sh generates a debug keystore on first run)
+mobile/build/
+mobile/dist/*.idsig
+*.keystore
+*.jks
+
+# Test artefacts
+node_modules/
+mobile/tests/pdf_samples/pdfjs_out.json
+
+# Third-party source PDF used by extract_nin_foods.py (download it from ICMR-NIN)
+DietaryGuidelinesforNINwebsite.pdf
