@@ -14,6 +14,10 @@ It runs on my own machine. The numbers come from a deterministic rules engine, a
 
 ## How it works
 
+<p align="center">
+  <img src="docs/architecture.png" width="900" alt="Architecture: PDF to extraction to deterministic engine to local LLM to dashboard, with a code-based audit gate">
+</p>
+
 ```
 Lab report (PDF)
    -> Extraction            pdfplumber, pypdf as fallback
@@ -35,10 +39,14 @@ If Ollama isn't running, every agent falls back to a template built from the det
 | :--- | :--- |
 | Analysis | Reads the profile and writes the clinical summary: abnormal markers, a three-tier risk breakdown, and how the markers relate. |
 | Nutrition | Turns the engine's targets and the analysis into the 7-day plan with a reason for each food. |
-| Evaluation (audit gate) | Checks the plan against the constraints and drafts the Doctor Brief and a plain-language summary. |
+| Evaluation (audit gate) | Runs a deterministic constraint check on the plan (calorie convergence, contraindicated foods, protocol coverage, food-table sourcing), then has the model draft the Doctor Brief and a plain-language summary around the results. |
 | Consultant | Answers follow-up questions in chat, grounded in the report's numbers. |
 
 There is also a **single-LLM baseline** and a split-panel comparison page. It runs the same question through a bare model and through the NutriAgent pipeline so the difference is easy to see.
+
+<p align="center">
+  <img src="docs/screenshots/nutri-web-11-compare.png" width="720">
+</p>
 
 <p align="center">
   <img src="docs/screenshots/nutri-web-07-tab3-plan.png" width="720">
@@ -109,7 +117,7 @@ The parity tests are what I trust for the Android port: the JavaScript engine is
 
 ## Known limits
 
-- **The audit score is not a clinical metric.** It is the number the audit model writes in its answer, and when the model is offline or no score can be parsed it falls back to a fixed placeholder (95). In the Android app the "plan self-check" only verifies the plan against the app's own rules. Neither is a clinical review.
+- **The audit score is not a clinical metric.** In both apps it is the share of constraint checks the plan passes (calories near target, no contraindicated food, protocols stacked, meals traceable to the NIN tables). It verifies the plan against its own rules and is not a clinical review. The model's written audit and Doctor Brief are drafts for a clinician to check.
 - Biomarker extraction is regex-based. It works on standard lab-report layouts and misses unusual ones. A marker it can't find is left out, never guessed.
 - Allergen filtering matches food names (plus Poha/Upma for nut allergy). Hidden ingredients can't be detected, so check recipes yourself.
 - I have not run the Android app on a physical device. The native shell is verified by compilation, APK signature checks, and a headless phone-sized UI run against a simulated native bridge.

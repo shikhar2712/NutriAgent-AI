@@ -47,12 +47,12 @@ All four agents talk to Ollama's `/api/generate` through one `OllamaClient` (def
 | :--- | :--- | :--- |
 | Analysis | 0.2 | Summary, abnormal-marker breakdown, risk tiers, directives for the nutrition agent |
 | Nutrition | 0.3 | Receives the engine's targets and avoid/recommend lists as mandatory constraints |
-| Evaluation | 0.1 | Lowest temperature because it makes the conservative, rule-following judgements |
+| Evaluation | 0.1 | Lowest temperature because it writes the conservative, rule-following review. The score does not come from the model (see below) |
 | Consultant | 0.3 | Uses the last 6 chat messages plus the pipeline results |
 
 Each agent trims its inputs (PDF preview, analysis, diet plan) so the prompt stays inside the context window. Every agent also has an offline fallback built from the deterministic data, so a missing or slow model degrades the prose and nothing else.
 
-**Audit score caveat.** The evaluation agent extracts a score from the model's text with a regex (`NN/100`) and calls anything at 80 or above "PASSED". If the model is offline, or the text has no score, it uses a fixed placeholder of 95. So the score reflects how well the audit prompt was answered. It isn't a measurement of clinical safety, and I treat it as a UI signal only.
+**How the audit score works.** The score is computed by code, not read from the model's text. `check_constraint_compliance` (in `general_intake.py`, shared with the report-free path) checks the generated 7-day plan against its own prescription: daily calories within tolerance of the target, no contraindicated food in any meal, at least one protocol stacked, and meals traceable to the NIN tables. The score is the percentage of checks that pass, and the model is told those results as facts and asked not to invent a number. This verifies the plan against its own rules. It is not a clinical safety score. An earlier version regex-parsed a `NN/100` from the model's reply and fell back to a fixed 95 when it was offline. I replaced that because a placeholder presented as a clinical result is misleading.
 
 ## Decisions and trade-offs
 
@@ -81,4 +81,3 @@ Each agent trims its inputs (PDF preview, analysis, diet plan) so the prompt sta
 - Real clinical review of the protocols and the food filters
 - OCR for scanned reports
 - Multi-patient storage, authentication and audit logging before any real-world use
-- A deterministic audit score computed from the constraint checks, replacing the model-written number
