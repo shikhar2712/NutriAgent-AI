@@ -9,6 +9,7 @@ Contains:
 
 import json
 import requests
+from general_intake import check_constraint_compliance
 from typing import Dict, Any, List, Optional, Tuple
 
 
@@ -308,8 +309,10 @@ Rotate lean protein sources (wild fish, legumes, eggs, tofu), complex high-fiber
 class EvaluationAgent:
     """
     Agent 3: Evaluation Agent & Audit Gate
-    Validates clinical safety, cross-checks diet plan against contraindications,
-    computes safety score, and drafts the Doctor Brief and Patient Summary.
+    Audits the 7-day plan against its own prescription with a deterministic constraint
+    check (calorie convergence, contraindicated foods, protocol coverage, food-table
+    sourcing), then has the model write the Doctor Brief and Patient Summary around it.
+    The score is the share of those checks that pass; it is not a clinical safety score.
     """
     def __init__(self, client: OllamaClient):
         self.client = client
@@ -318,9 +321,8 @@ Your job is to perform an exhaustive AUDIT on the proposed Diet Plan and Clinica
 You must:
 1. Verify Biomarker Safety & Contraindications: Check that NO prohibited ingredients for the patient's conditions are present.
 2. Verify Macro/Calorie Compliance: Confirm the meal plan matches the deterministic caloric and macronutrient targets.
-3. Compute an objective Clinical Safety Score from 0 to 100%.
-4. Issue an Audit Status: "PASSED - Clinically Validated & Safe" or "REVISED - Minor Adjustments Advised".
-5. Produce two dedicated deliverables:
+3. Report on the deterministic constraint checks you are given. Do not invent a numeric score; the score is computed by code.
+4. Produce two dedicated deliverables:
    A. **Doctor Brief**: Clinical, concise medical handoff memo for the primary care physician detailing biomarkers, rationale, and recommended follow-up tests.
    B. **Patient Plain-Language Summary**: Encouraging, easy-to-understand lifestyle guide empowering the patient."""
 
@@ -335,6 +337,8 @@ You must:
         macros = nutrition_protocol.get("macros", {})
 
         biomarker_lines = [f"{b['name']}: {b['value']} {b['unit']} ({b['status']})" for b in biomarkers.values()]
+        compliance = check_constraint_compliance(nutrition_protocol)
+        check_lines = "\n".join(f"- [{'PASS' if ok else 'FAIL'}] {label} ({detail})" for label, ok, detail in compliance["checks"])
 
         prompt = f"""### Patient Profile:
 - Age: {demographics.get('age')} | Gender: {demographics.get('gender')} | BMI: {demographics.get('bmi')} | BP: {demographics.get('bp_string')}
@@ -348,6 +352,9 @@ You must:
 - Constraints: {'; '.join(constraints)}
 - Forbidden Foods: {', '.join(strictly_avoid)}
 
+### Deterministic Constraint Checks (computed by code, treat as facts):
+{check_lines}
+
 ### Proposed Diet Plan to Audit:
 {diet_plan_text[:2500]}
 
@@ -355,12 +362,11 @@ You must:
 ### Your Task as Evaluation & Audit Agent:
 Perform a comprehensive clinical safety audit and format your response with these exact sections:
 
-### 1. Audit Verdict & Safety Metric
-- **Audit Verdict**: [PASSED - Clinically Validated & Safe / CAUTION - Needs Adjustment]
-- **Safety & Compliance Score**: [e.g. 96/100]
-- **Contraindication Verification**: [State whether any prohibited foods were mistakenly included and confirm compliance]
+### 1. Audit Summary
+- **Constraint Checks**: Summarise the deterministic checks above in one or two sentences.
+- **Contraindication Review**: [State whether any prohibited foods appear in the plan text]
 
-### 2. Clinical Validation Matrix
+### 2. Plan Review
 - **Glycemic Safety**: Evaluation of carbohydrate quality and glycemic load.
 - **Cardiovascular Safety**: Evaluation of saturated fat limits and sodium thresholds.
 - **Renal & Metabolic Safety**: Evaluation of protein burden and purine/electrolyte balance.
@@ -381,43 +387,32 @@ Perform a comprehensive clinical safety audit and format your response with thes
         try:
             response_text = self.client.generate(prompt, self.system_prompt, temperature=0.1)
         except Exception as e:
-            response_text = self._generate_fallback_audit(health_profile, nutrition_protocol, str(e))
-
-        # Extract safety score from response if available
-        safety_score = 95
-        if "Score" in response_text:
-            import re
-            score_match = re.search(r"(\d{2,3})\s*(?:\/|\s*out of\s*)\s*100", response_text)
-            if score_match:
-                try:
-                    safety_score = int(score_match.group(1))
-                except ValueError:
-                    pass
+            response_text = self._generate_fallback_audit(health_profile, nutrition_protocol, str(e), compliance)
 
         return {
             "agent": "Evaluation Agent (Audit Gate)",
             "model": self.client.model,
-            "safety_score": safety_score,
-            "audit_verdict": "PASSED - Clinically Validated" if safety_score >= 80 else "CAUTION",
+            "compliance_score": compliance["score"],
+            "audit_verdict": compliance["verdict"],
+            "compliance": compliance,
             "evaluation_report": response_text
         }
 
-    def _generate_fallback_audit(self, health_profile: Dict[str, Any], nutrition_protocol: Dict[str, Any], err_msg: str) -> str:
+    def _generate_fallback_audit(self, health_profile: Dict[str, Any], nutrition_protocol: Dict[str, Any], err_msg: str,
+                                 compliance: Dict[str, Any]) -> str:
         demographics = health_profile.get("demographics", {})
         clinical_flags = health_profile.get("clinical_flags", [])
         macros = nutrition_protocol.get("macros", {})
+        check_lines = "\n".join(f"- **{'Pass' if ok else 'Fail'}**: {label} ({detail})" for label, ok, detail in compliance["checks"])
 
-        return f"""*(Note: Ollama offline/unreachable [{err_msg}]. Generated by Built-in Clinical Evaluation Engine)*
+        return f"""*(Note: Ollama offline/unreachable [{err_msg}]. Generated by the built-in template; no model review was performed.)*
 
-### 1. Audit Verdict & Safety Metric
-- **Audit Verdict**: PASSED - Clinically Validated & Safe
-- **Safety & Compliance Score**: 95/100
-- **Contraindication Verification**: Verified. No prohibited high-glycemic or atherogenic trigger foods detected in the recommended meals.
+### 1. Audit Summary
+- **Plan compliance**: {compliance['score']}/100 - {compliance['verdict']}. These are constraint checks on the plan, not a biomarker cross-check.
+{check_lines}
 
-### 2. Clinical Validation Matrix
-- **Glycemic Safety**: Excellent. Plan emphasizes low-GI complex carbs and high-fiber legumes.
-- **Cardiovascular Safety**: Verified. Sodium target kept within safe clinical thresholds; saturated fat is minimized.
-- **Renal/Hepatic Clearance**: Verified. Adequate clean fluid intake ensured with balanced protein distribution.
+### 2. Plan Review
+- The checks above are computed from the generated plan and its prescription. They do not replace review by a doctor or dietitian.
 
 ### 3. Doctor Brief (For Attending Physician)
 - **Patient**: {demographics.get('name', 'Patient')} ({demographics.get('age', 45)} y/o {demographics.get('gender', 'Individual')})

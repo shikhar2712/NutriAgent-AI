@@ -151,9 +151,11 @@ class TestAgentsPipeline(unittest.TestCase):
         # 3. Evaluation Agent (Audit Gate)
         agent3 = EvaluationAgent(self.client)
         out3 = agent3.run(self.profile, out1, out2, self.protocol)
-        self.assertIn("safety_score", out3)
-        self.assertGreaterEqual(out3["safety_score"], 80)
-        self.assertEqual(out3["audit_verdict"], "PASSED - Clinically Validated")
+        self.assertIn("compliance_score", out3)
+        self.assertEqual(out3["compliance_score"], out3["compliance"]["score"])
+        self.assertTrue(out3["compliance"]["checks"])
+        self.assertTrue(out3["audit_verdict"].startswith(("PASSED", "PARTIAL", "FAILED")))
+        self.assertNotIn("95/100", out3["evaluation_report"])  # no placeholder score in the offline template
 
         # 4. Consultant Agent
         agent4 = ConsultantAgent(self.client)

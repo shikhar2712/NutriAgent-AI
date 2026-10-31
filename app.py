@@ -1233,8 +1233,9 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
     biomarkers = health_profile.get("biomarkers", {})
     clinical_flags = health_profile.get("clinical_flags", [])
     macros = nutrition_protocol.get("macros", {})
-    safety_score = evaluation_output.get("safety_score", 95)
-    audit_verdict = evaluation_output.get("audit_verdict", "PASSED - Clinically Validated")
+    compliance_score = evaluation_output.get("compliance_score", 0)
+    audit_verdict = evaluation_output.get("audit_verdict", "Not available")
+    compliance_checks = evaluation_output.get("compliance", {}).get("checks", [])
 
     st.divider()
     render_pipeline_stepper(6)
@@ -1249,7 +1250,7 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
     with k4:
         st.markdown(f"""<div class="metric-card"><div class="metric-label">Diagnostic Flags</div><div class="metric-value" style="color: {'#DC2626' if clinical_flags else '#059669'};">{len(clinical_flags)} <span style="font-size:0.85rem;font-weight:500;">FLAGS</span></div><div class="metric-subtext">{clinical_flags[0]['condition'][:22] if clinical_flags else 'All systems optimal'}</div></div>""", unsafe_allow_html=True)
     with k5:
-        st.markdown(f"""<div class="metric-card"><div class="metric-label">Audit Safety Score</div><div class="metric-value" style="color: {'#059669' if safety_score >= 80 else '#D97706'};">{safety_score}<span style="font-size:0.85rem;font-weight:500;">/100</span></div><div class="metric-subtext">{audit_verdict}</div></div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div class="metric-card"><div class="metric-label">Plan Compliance Score</div><div class="metric-value" style="color: {'#059669' if compliance_score == 100 else '#D97706'};">{compliance_score}<span style="font-size:0.85rem;font-weight:500;">/100</span></div><div class="metric-subtext">{audit_verdict}</div></div>""", unsafe_allow_html=True)
 
     st.write("")
     tab_analysis, tab_audit, tab_diet, tab_chat, tab_biomarkers, tab_export = st.tabs([
@@ -1275,10 +1276,11 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
         st.markdown("""<div class="agent-header"><div class="agent-title-block"><span class="agent-serial">AGENT 02</span><h3 class="agent-heading">Clinical Audit Gate & Medical Handoff Brief</h3></div><div class="agent-meta">VERDICT: PASSED | CLINICAL PRIORITY: TIER 2</div></div>""", unsafe_allow_html=True)
         aud_c1, aud_c2 = st.columns([1, 2.5])
         with aud_c1:
-            st.metric("Clinical Safety Score", f"{safety_score} / 100")
-            st.success(f"Audit Verdict: **{audit_verdict}**")
+            st.metric("Plan Compliance Score", f"{compliance_score} / 100")
+            (st.success if compliance_score == 100 else st.warning)(f"Audit Verdict: **{audit_verdict}**")
+            st.caption("Share of constraint checks the plan passes. Not a clinical safety score.")
         with aud_c2:
-            st.markdown("**Clinical Safety Verification Matrix:**\n- **Glycemic Safety**: Meal glycemic load kept under threshold; rapid sugar spikes strictly prevented.\n- **Cardiovascular Safety**: Saturated fatty acids capped below 7%; zero industrial trans-fats.\n- **Sodium & Blood Pressure**: Sodium restricted under DASH protocol limits (<1800 mg/day).\n- **Renal & Urate Clearance**: Protein burden moderated to prevent glomerular stress; purines restricted.")
+            st.markdown("**Constraint Checks:**\n" + "\n".join(f"- {'✅' if ok else '❌'} **{label}**: {detail}" for label, ok, detail in compliance_checks))
         st.divider()
         st.markdown("##### Attending Physician Clinical Memo (Doctor Brief)")
         st.caption("A concise clinical handoff memo detailing biomarkers, dietary rationale, and recommended 12-week laboratory monitoring.")
@@ -1388,10 +1390,10 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
 {analysis_output.get('analysis_report', '')}
 
 ================================================================================
-02. CLINICAL SAFETY AUDIT & MEDICAL CLEARANCE (AGENT 02)
+02. PLAN AUDIT & DOCTOR BRIEF (AGENT 02)
 ================================================================================
-Audit Verdict: {evaluation_output.get('audit_verdict', 'PASSED')}
-Safety Score: {evaluation_output.get('safety_score', 95)}/100
+Audit Verdict: {evaluation_output.get('audit_verdict', 'Not available')}
+Plan Compliance Score: {evaluation_output.get('compliance_score', 0)}/100 (constraint checks, not a clinical safety score)
 {evaluation_output.get('evaluation_report', '')}
 
 ================================================================================
