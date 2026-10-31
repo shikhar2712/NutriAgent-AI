@@ -1,0 +1,9 @@
+services:
+  nutriagent:
+    build: .
+    image: nutriagent
+    container_name: nutriagent
+    # host networking lets the app reach Ollama on this server at http://localhost:11434
+    # (the app's default endpoint) and serves the UI on port 8501.
+    network_mode: host
+    restart: unless-stopped

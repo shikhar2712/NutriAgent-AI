@@ -1,0 +1,11 @@
+*
+!Dockerfile
+!requirements.txt
+!app.py
+!agents.py
+!extractor.py
+!deterministic_nutrition.py
+!general_intake.py
+!indian_foods.py
+!nin_food_data.json
+!sample_blood_test_report.pdf
