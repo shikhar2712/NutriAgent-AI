@@ -1,0 +1,17 @@
+# NutriAgent web app (the same HTML/JS that is packaged in the Android APK), served by nginx.
+# Mobile-web build (NOT the Streamlit app). From the project root: docker build -f mobile/docker/Dockerfile.mobile-web -t nutriagent-mobile-web .
+FROM nginxinc/nginx-unprivileged:1.27-alpine
+
+USER root
+RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/default.conf
+COPY mobile/docker/nginx.conf /etc/nginx/conf.d/nutriagent.conf
+COPY mobile/web/ /usr/share/nginx/html/
+# single source of truth for the NIN food tables
+COPY nin_food_data.json /usr/share/nginx/html/data/nin_food_data.json
+# the installable Android app, offered for download at /NutriAgent.apk
+COPY mobile/dist/NutriAgent.apk /usr/share/nginx/html/NutriAgent.apk
+RUN chmod -R a+rX /usr/share/nginx/html
+USER nginx
+
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD wget -qO- http://127.0.0.1:8080/healthz || exit 1

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- leaf -->
+    <path android:fillColor="#34D399"
+        android:pathData="M54,30 C72,32 80,48 76,66 C60,70 40,64 36,46 C36,38 44,31 54,30 Z"/>
+    <!-- vein -->
+    <path android:strokeColor="#0F172A" android:strokeWidth="3" android:strokeLineCap="round"
+        android:pathData="M42,64 C50,56 58,48 68,40"/>
+    <!-- medical cross -->
+    <path android:fillColor="#38BDF8"
+        android:pathData="M50,72 h8 v6 h6 v8 h-6 v6 h-8 v-6 h-6 v-8 h6 z"/>
+</vector>
