@@ -239,11 +239,11 @@ def compute_clinical_nutrition_protocol(health_profile: Dict[str, Any]) -> Dict[
     # Plain-language actionable summary
     plain_summary = []
     if is_diabetic:
-        plain_summary.append("Swap white rice, white bread, and sugary treats for steel-cut oats, quinoa, and lentils to keep your blood sugar steady.")
+        plain_summary.append("Swap white rice, maida breads, and sweets for phulka/chapati, dalia, idli, and dals - NIN's own GI table puts chapati at 52 against white rice at 73.")
     if is_dyslipidemic:
-        plain_summary.append("Replace butter, fried snacks, and fatty meats with heart-friendly extra virgin olive oil, walnuts, and wild fish.")
+        plain_summary.append("Replace ghee-heavy and deep-fried snacks (puri, vada, samosa, pakora) with steamed idli, dhokla, and roasted chana, and cook with mustard or groundnut oil.")
     if is_hypertensive:
-        plain_summary.append("Keep added salt low (under 1 teaspoon daily) and enjoy potassium-rich foods like tender coconut water, spinach, and sweet potatoes.")
+        plain_summary.append("Keep added salt under 1 teaspoon a day (NIN advises less than 5 g), skip pickles and papad, and lean on tender coconut water, spinach, and bottle gourd for potassium.")
     if is_hyperuricemic:
         plain_summary.append("Stay well-hydrated with at least 3 liters of water daily and steer clear of beer, sodas, and organ meats to flush uric acid.")
     if not plain_summary:
@@ -338,7 +338,7 @@ def compute_clinical_nutrition_protocol(health_profile: Dict[str, Any]) -> Dict[
         }
     ]
 
-    return {
+    protocol = {
         "energy": energy,
         "protocols": protocols,
         "macros": {
@@ -361,5 +361,49 @@ def compute_clinical_nutrition_protocol(health_profile: Dict[str, Any]) -> Dict[
         "plain_summary": plain_summary,
         "lifestyle_habits": lifestyle_habits,
         "grocery_categories": grocery_categories,
-        "structured_7day_meals": structured_7day_meals
+        "structured_7day_meals": structured_7day_meals,
+        "western_7day_meals": structured_7day_meals,
+        "cuisine": "Western / International"
     }
+
+    # --- Indian / hybrid plan (NIN-sourced) ---------------------------------
+    # Built from the ICMR-NIN "Dietary Guidelines for Indians" annexures, so every
+    # meal-card calorie traces to a printed table. The Western plan above is kept
+    # intact under "western_7day_meals" and is used whenever NIN data is absent.
+    try:
+        from indian_foods import build_indian_7day_meals
+        indian_days = build_indian_7day_meals(health_profile, protocol)
+    except Exception as exc:
+        # Do not swallow the cause: a silent fallback to the Western plan is exactly
+        # the failure mode that made "Ollama offline" unreadable.
+        indian_days = []
+        protocol["indian_plan_error"] = "%s: %s" % (type(exc).__name__, exc)
+
+    if indian_days:
+        protocol["indian_7day_meals"] = indian_days
+        protocol["structured_7day_meals"] = indian_days
+        protocol["cuisine"] = "Indian / hybrid (NIN-sourced)"
+        # Keep the grocery panel consistent with the meal cards above it.
+        try:
+            from indian_foods import build_indian_grocery_categories
+            indian_grocery = build_indian_grocery_categories(health_profile, protocol)
+        except Exception as exc:
+            indian_grocery = {}
+            protocol["indian_plan_error"] = "grocery: %s: %s" % (type(exc).__name__, exc)
+        if indian_grocery:
+            protocol["western_grocery_categories"] = grocery_categories
+            protocol["grocery_categories"] = indian_grocery
+
+        # The recommendation list also feeds the Nutrition Agent prompt, so leaving
+        # it Western pulled the model back towards oats/quinoa/salmon.
+        try:
+            from indian_foods import build_indian_recommendations
+            indian_recs = build_indian_recommendations(health_profile, protocol)
+        except Exception as exc:
+            indian_recs = []
+            protocol["indian_plan_error"] = "recommendations: %s: %s" % (type(exc).__name__, exc)
+        if indian_recs:
+            protocol["western_strongly_recommend"] = protocol["strongly_recommend"]
+            protocol["strongly_recommend"] = indian_recs
+
+    return protocol

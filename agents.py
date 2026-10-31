@@ -15,7 +15,7 @@ from typing import Dict, Any, List, Optional, Tuple
 class OllamaClient:
     """Client for local Ollama instance running Qwen2.5."""
 
-    def __init__(self, base_url: str = "http://localhost:11434", model: str = "qwen2.5:7b", timeout: int = 120):
+    def __init__(self, base_url: str = "http://localhost:11434", model: str = "qwen2.5:7b", timeout: int = 600):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
@@ -51,10 +51,15 @@ class OllamaClient:
             "prompt": prompt,
             "system": system_prompt,
             "stream": False,
+            "keep_alive": "30m",
             "options": {
                 "temperature": temperature,
                 "top_p": 0.9,
-                "num_ctx": 8192
+                # 8192 left too little headroom once the Analysis output is embedded in
+                # the prompt: generation overflowed the window, llama.cpp context-shifted
+                # the instructions out, and the model ran away (77k tokens, no stop token).
+                "num_ctx": 16384,
+                "num_predict": 4096
             }
         }
         try:
@@ -198,6 +203,15 @@ You must:
         strictly_avoid = nutrition_protocol.get("strictly_avoid", [])
         strongly_recommend = nutrition_protocol.get("strongly_recommend", [])
 
+        # Ground the plan in the ICMR-NIN "Dietary Guidelines for Indians" food tables.
+        # The block is pre-filtered against this patient's contraindications, both to
+        # keep the prompt small and so unsafe foods are never even offered.
+        try:
+            from indian_foods import build_nin_reference_block
+            nin_block = build_nin_reference_block(health_profile, nutrition_protocol)
+        except Exception:
+            nin_block = ""
+
         prompt = f"""### Patient Demographics:
 - Age: {demographics.get('age', 'N/A')} | Gender: {demographics.get('gender', 'N/A')} | Weight: {demographics.get('weight_kg', 'N/A')} kg | BMI: {demographics.get('bmi', 'N/A')}
 
@@ -219,9 +233,14 @@ You must:
 - **STRICTLY AVOID FOODS**: {', '.join(strictly_avoid)}
 - **STRONGLY RECOMMENDED FOODS**: {', '.join(strongly_recommend)}
 
+{nin_block}
+
 ---
 ### Your Task as Nutrition Agent:
-Generate a thorough, personalized, clinical diet plan:
+Generate a thorough, personalized, clinical diet plan.
+Build meals from the VERIFIED INDIAN FOOD TABLE above wherever it covers the slot,
+quoting its NIN calorie values verbatim; fall back to a non-Indian item only when the
+table has no equivalent, and mark any such item "(non-NIN estimate)".
 1. **Clinical Diet Strategy Overview**: Explanation of how this macro/micro distribution specifically targets the patient's abnormal biomarkers.
 2. **7-Day Comprehensive Meal Framework**:
    - Provide a detailed Day 1-7 plan with specific meal breakdowns for each day:

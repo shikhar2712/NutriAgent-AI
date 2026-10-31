@@ -568,7 +568,7 @@ def build_health_profile(raw_text: str) -> Dict[str, Any]:
                 "marker": f"HbA1c: {hba1c}%",
                 "organ": "Blood Sugar / Metabolism",
                 "plain_meaning": "Blood sugar is slightly elevated above normal. Fully reversible with dietary and lifestyle adjustments.",
-                "action_tip": "Replace refined carbs with steel-cut oats, quinoa, lentils, and daily light physical activity."
+                "action_tip": "Replace refined carbs with phulka/chapati, dalia, idli and dals (NIN GI: chapati 52 vs white rice 73), plus daily light physical activity."
             })
     elif fbs:
         if fbs >= 126:
@@ -607,7 +607,7 @@ def build_health_profile(raw_text: str) -> Dict[str, Any]:
             "marker": ", ".join(flag_details),
             "organ": "Heart & Arteries",
             "plain_meaning": "Elevated circulating bad fats (LDL/Triglycerides) that can stress cardiovascular vessels over time.",
-            "action_tip": "Switch from saturated/fried fats to extra virgin olive oil, walnuts, chia seeds, and wild fish."
+            "action_tip": "Switch deep-fried items (puri, vada, samosa) for steamed idli and dhokla; cook with mustard or groundnut oil and add flaxseed (alsi)."
         })
 
     # Renal
@@ -679,7 +679,7 @@ def build_health_profile(raw_text: str) -> Dict[str, Any]:
             "marker": f"K+: {k_val} mEq/L",
             "organ": "Electrolytes & Heart Rhythm",
             "plain_meaning": "Low blood potassium, which can cause muscle cramps, weakness, or irregular heartbeats.",
-            "action_tip": "Incorporate potassium-rich tender coconut water, baked sweet potato, spinach, and avocado."
+            "action_tip": "Incorporate potassium-rich tender coconut water, bottle gourd, spinach, banana and buttermilk."
         })
     elif k_val and k_val > 5.0:
         clinical_flags.append({

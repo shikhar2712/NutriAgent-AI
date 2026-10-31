@@ -375,6 +375,108 @@ st.markdown("""
         animation: pulse-glow 1.5s infinite;
     }
 
+    /* ---- Live data-flow visualisation ---- */
+    .flow-wrap {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 6px 2px 2px 2px;
+        margin-bottom: 14px;
+    }
+    .flow-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 74px;
+        flex: 0 0 auto;
+    }
+    .flow-dot {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem; font-weight: 700;
+        color: #FFFFFF; background: #CBD5E1;
+        border: 2px solid #FFFFFF;
+        transition: background 0.4s ease;
+    }
+    .flow-node.done .flow-dot { background: #059669; }
+    .flow-node.active .flow-dot {
+        background: #1D4ED8;
+        animation: node-pulse 1.3s ease-out infinite;
+    }
+    @keyframes node-pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.55); }
+        70%  { box-shadow: 0 0 0 12px rgba(29, 78, 216, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+    }
+    .flow-label {
+        font-size: 0.67rem; font-weight: 600; color: #64748B;
+        margin-top: 6px; text-align: center; line-height: 1.25;
+        max-width: 84px;
+    }
+    .flow-node.active .flow-label { color: #1D4ED8; }
+    .flow-node.done .flow-label { color: #065F46; }
+    .flow-time {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.62rem; color: #94A3B8; margin-top: 2px; min-height: 12px;
+    }
+    .flow-node.active .flow-time { color: #1D4ED8; font-weight: 700; }
+
+    /* the connector carrying "data" between two agents */
+    .flow-edge {
+        flex: 1 1 auto;
+        height: 3px;
+        background: #E2E8F0;
+        margin: 16px 4px 0 4px;
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+        min-width: 18px;
+    }
+    .flow-edge.done { background: #6EE7B7; }
+    .flow-edge.active::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        height: 100%; width: 45%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, rgba(29,78,216,0) 0%, #1D4ED8 50%, rgba(29,78,216,0) 100%);
+        animation: flow-move 1.1s linear infinite;
+    }
+    @keyframes flow-move {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(240%); }
+    }
+
+    /* indeterminate bar under the executing stage */
+    .flow-progress {
+        height: 4px; width: 100%;
+        background: #E2E8F0;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+    .flow-progress::after {
+        content: "";
+        display: block;
+        height: 100%; width: 38%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #38BDF8, #1D4ED8);
+        animation: bar-sweep 1.25s ease-in-out infinite;
+    }
+    @keyframes bar-sweep {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(300%); }
+    }
+    .flow-live-dot {
+        display: inline-block;
+        width: 7px; height: 7px; border-radius: 50%;
+        background: #0284C7; margin-right: 6px;
+        animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.25; } }
+
     /* Clean Markdown rendering */
     .clinical-prose {
         font-size: 0.92rem;
@@ -472,6 +574,37 @@ def render_pipeline_stepper(current_stage: int):
 # ==========================================
 # PAGE: LLM MODEL (Single Qwen Direct Chat)
 # ==========================================
+def render_comparison_table(rows, assumptions=None, model_name="qwen2.5:7b"):
+    """Side-by-side capability table. Both columns run the SAME model - the delta is
+    context, deterministic computation and grounding, not model capability."""
+    body = ""
+    for r in rows:
+        body += (
+            '<tr>'
+            f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;font-weight:600;color:#0F172A;font-size:0.8rem;white-space:nowrap;">{r["dimension"]}</td>'
+            f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;background:#FFF5F5;color:#7F1D1D;font-size:0.8rem;">{r["llm"]}</td>'
+            f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;background:#F0FDF4;color:#14532D;font-size:0.8rem;">{r["agent"]}</td>'
+            '</tr>'
+        )
+    st.markdown(
+        '<div style="overflow-x:auto;margin-top:6px;">'
+        '<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">'
+        '<thead><tr>'
+        '<th style="padding:9px 10px;background:#F8FAFC;text-align:left;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:#475569;">Dimension</th>'
+        f'<th style="padding:9px 10px;background:#FEF2F2;text-align:left;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:#991B1B;">Single LLM ({model_name})</th>'
+        f'<th style="padding:9px 10px;background:#ECFDF5;text-align:left;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:#065F46;">NutriAgent ({model_name} + engine)</th>'
+        '</tr></thead>'
+        f'<tbody>{body}</tbody></table></div>',
+        unsafe_allow_html=True,
+    )
+    st.caption(
+        "Both columns use the same local model. The difference is the deterministic "
+        "engine, the NIN food tables and the contraindication filter around it - not model size."
+    )
+    if assumptions:
+        st.caption("Assumptions made from your wording: " + "; ".join(assumptions))
+
+
 def render_llm_model_page(client: OllamaClient):
     """Single Qwen LLM direct chat page — no agents, no PDF, no pipeline."""
     st.markdown("""
@@ -531,12 +664,38 @@ def render_llm_model_page(client: OllamaClient):
                     if h_val > 3.0: h_val /= 100.0
                     bmi_val = round(w_val / (h_val * h_val), 1)
                     cat = "Obese" if bmi_val >= 30 else ("Overweight" if bmi_val >= 25 else ("Normal Weight" if bmi_val >= 18.5 else "Underweight"))
-                    llm_resp = f"**BMI:** {bmi_val} kg/m² ({cat})\n\n*(Ollama offline — calculated by built-in formula.)*"
+                    llm_resp = f"**BMI:** {bmi_val} kg/m² ({cat})\n\n*(LLM call failed — {e} — BMI computed by built-in formula.)*"
                 else:
-                    llm_resp = f"*(Ollama offline — {e})* I cannot provide a response at this time. Please ensure Ollama is running with `ollama serve`."
+                    llm_resp = f"*(LLM call failed — {e})* No answer could be generated. Check that the model is pulled and the endpoint in the sidebar is correct."
 
         st.session_state["llm_chat_messages"].append({"role": "assistant", "content": llm_resp})
+        # Run the same question through NutriAgent so the two answers can be compared
+        # side by side without needing a lab PDF.
+        try:
+            from general_intake import run_nutriagent_general
+            with st.spinner("Running the same question through the NutriAgent engine..."):
+                st.session_state["llm_last_comparison"] = run_nutriagent_general(llm_query, client)
+            st.session_state["llm_last_query"] = llm_query
+        except Exception as exc:
+            st.session_state["llm_last_comparison"] = {"error": "%s: %s" % (type(exc).__name__, exc)}
         st.rerun()
+
+    comparison = st.session_state.get("llm_last_comparison")
+    if comparison and comparison.get("comparison_rows"):
+        st.divider()
+        st.markdown("#### Single LLM vs NutriAgent - same question, same model")
+        st.caption(f"Question: *{st.session_state.get('llm_last_query', '')}*")
+        render_comparison_table(comparison["comparison_rows"], comparison.get("assumptions"))
+        with st.expander("NutriAgent's answer to this question (engine-grounded)", expanded=True):
+            if comparison.get("answer"):
+                st.markdown(comparison["answer"])
+            else:
+                st.warning("NutriAgent could not generate prose: %s" % comparison.get("error"))
+            audit = comparison.get("audit", {})
+            if audit:
+                st.caption("%s - %s" % (audit.get("verdict", ""), audit.get("scope", "")))
+    elif comparison and comparison.get("error"):
+        st.warning("Comparison unavailable: %s" % comparison["error"])
 
     if st.session_state.get("llm_chat_messages"):
         if st.button("Clear Chat", type="secondary", key="clear_llm_chat"):
@@ -791,13 +950,25 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
                         if h_v > 3.0: h_v /= 100.0
                         bmi_v = round(w_v / (h_v * h_v), 1)
                         cat = "Obese" if bmi_v >= 30 else ("Overweight" if bmi_v >= 25 else ("Normal Weight" if bmi_v >= 18.5 else "Underweight"))
-                        llm_resp = f"**BMI:** {bmi_v} kg/m² ({cat})\n\n*(Ollama offline — calculated by built-in formula.)*"
+                        llm_resp = f"**BMI:** {bmi_v} kg/m² ({cat})\n\n*(LLM call failed — {e} — BMI computed by built-in formula.)*"
                     else:
-                        llm_resp = f"*(Ollama offline — {e})*"
+                        llm_resp = f"*(LLM call failed — {e})*"
 
-            # --- RIGHT PANEL: NutriAgent Deterministic Logic ---
-            # Run a lightweight simulation of the NutriAgent deterministic engine
-            nutriagent_resp = run_nutriagent_simulation(active_compare)
+            # --- RIGHT PANEL: the real NutriAgent engine -------------------
+            # Previously this called run_nutriagent_simulation(), a keyword-matching
+            # template that never touched the clinical engine. It now runs the real
+            # deterministic protocol stack plus an engine-grounded answer.
+            comparison = None
+            try:
+                from general_intake import run_nutriagent_general
+                with st.spinner("Running the NutriAgent engine (rules + NIN tables + audit)..."):
+                    comparison = run_nutriagent_general(active_compare, client)
+                nutriagent_resp = comparison.get("answer") or ""
+                if not nutriagent_resp:
+                    nutriagent_resp = "*(Engine computed the protocol below; prose generation failed: %s)*" % comparison.get("error")
+            except Exception as exc:
+                nutriagent_resp = run_nutriagent_simulation(active_compare)
+                st.caption("Engine unavailable (%s) - showing the deterministic template instead." % exc)
 
             # Render split panels
             col_llm, col_nutri = st.columns(2)
@@ -831,13 +1002,15 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
                 st.markdown("</div>", unsafe_allow_html=True)
 
             with col_nutri:
-                st.markdown("""
+                _audit = (comparison or {}).get("audit", {})
+                _verdict_badge = ("AUDIT %d/100" % _audit["score"]) if _audit.get("score") is not None else "DETERMINISTIC"
+                st.markdown(f"""
                 <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:16px; height:100%;">
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
                         <div style="font-size:0.92rem; font-weight:700; color:#166534; display:flex; align-items:center; gap:6px;">
                             <span>NutriAgent Multi-Agent Logic</span>
                         </div>
-                        <span class="status-pill status-normal">CLINICALLY VERIFIED</span>
+                        <span class="status-pill status-normal">{_verdict_badge}</span>
                     </div>
                     <div style="font-size:0.86rem; color:#334155; line-height:1.6; background:#FFFFFF; border:1px solid #DCFCE7; border-radius:6px; padding:12px;">
                 """, unsafe_allow_html=True)
@@ -858,6 +1031,16 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
                     st.markdown(f"<div style='font-size:0.78rem; color:#14532D; margin-bottom:2px;'>• {step}</div>", unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
 
+            if comparison and comparison.get("comparison_rows"):
+                st.markdown("##### Where the two answers differ")
+                render_comparison_table(comparison["comparison_rows"], comparison.get("assumptions"))
+                _a = comparison.get("audit", {})
+                if _a.get("checks"):
+                    with st.expander("Deterministic audit detail (%s)" % _a.get("verdict", ""), expanded=False):
+                        for label, ok, detail in _a["checks"]:
+                            st.markdown("- **%s** - %s (%s)" % (label, "PASS" if ok else "FAIL", detail))
+                        st.caption(_a.get("scope", ""))
+
         # Clear button
         if st.session_state.get("compare_query"):
             if st.button("Clear Comparison", type="secondary", key="clear_compare"):
@@ -866,6 +1049,7 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
 
         st.divider()
         st.caption("Upload a PDF above to activate the full 5-stage pipeline with real biomarker extraction, 4 specialized Qwen agents, and Doctor Brief generation.")
+        return
 
     # --- PDF Loaded: pipeline + results ---
     top_c1, top_c2 = st.columns([3, 1])
@@ -913,7 +1097,9 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
     if run_pipeline_btn:
         agent_panel = st.empty()
 
-        def render_agent_panel(active_idx: int, completed: list, message: str):
+        def render_agent_panel(active_idx: int, completed: list, message: str,
+                               elapsed: float = 0.0, durations: dict = None):
+            durations = durations or {}
             agents_def = [
                 ("01", "Profile Synthesis", "Extracting demographics & 25+ biomarker values"),
                 ("02", "Rules Engine", "Computing BMR, TDEE, clinical macros & food constraints"),
@@ -936,37 +1122,99 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
                     <div style="flex:1;"><div style="font-size:0.85rem;font-weight:600;color:#0F172A;">{name}</div><div style="font-size:0.75rem;color:#64748B;">{desc}</div></div>
                     <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.06em;color:{status_color};font-family:monospace;">{status_txt}</div>
                 </div>"""
+            # --- animated data-flow strip -----------------------------------
+            short_names = ["Profile", "Rules Engine", "Analysis", "Nutrition", "Audit Gate"]
+            flow = ""
+            for i, label in enumerate(short_names):
+                if i in completed:
+                    cls, dot = "done", "&#10003;"
+                elif i == active_idx:
+                    cls, dot = "active", agents_def[i][0]
+                else:
+                    cls, dot = "", agents_def[i][0]
+                if i in completed:
+                    stamp = ("%.1fs" % durations[i]) if i in durations else "done"
+                elif i == active_idx:
+                    stamp = "%.1fs" % elapsed
+                else:
+                    stamp = "&middot;"
+                flow += (
+                    f'<div class="flow-node {cls}">'
+                    f'<div class="flow-dot">{dot}</div>'
+                    f'<div class="flow-label">{label}</div>'
+                    f'<div class="flow-time">{stamp}</div></div>'
+                )
+                if i < len(short_names) - 1:
+                    # an edge lights up while data is moving into the next agent
+                    if i in completed and (i + 1) in completed:
+                        ecls = "done"
+                    elif i in completed and (i + 1) == active_idx:
+                        ecls = "active"
+                    else:
+                        ecls = ""
+                    flow += f'<div class="flow-edge {ecls}"></div>'
+
+            total_stages = len(short_names)
+            pct = int(round(100.0 * len(completed) / total_stages))
+            bar = '<div class="flow-progress"></div>' if active_idx >= 0 else ""
+
             agent_panel.markdown(f"""
             <div style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:8px;padding:16px;margin:12px 0;">
-                <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#64748B;text-transform:uppercase;margin-bottom:10px;">PIPELINE EXECUTION MONITOR</div>
-                {rows}
-                <div style="font-size:0.78rem;color:#0284C7;margin-top:10px;padding-top:10px;border-top:1px solid #E2E8F0;">&#9679; {message}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                    <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#64748B;text-transform:uppercase;">PIPELINE EXECUTION</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#475569;">{len(completed)}/{total_stages} stages &middot; {pct}%</div>
+                </div>
+                <div class="flow-wrap">{flow}</div>
+                {bar}
+                <div style="margin-top:14px;">{rows}</div>
+                <div style="font-size:0.78rem;color:#0284C7;margin-top:10px;padding-top:10px;border-top:1px solid #E2E8F0;"><span class="flow-live-dot"></span>{message}</div>
             </div>""", unsafe_allow_html=True)
 
         completed_steps = []
+        stage_durations = {}
+
+        def run_stage(idx, message, fn, *args):
+            """Runs one pipeline stage on a worker thread and repaints the flow panel
+            while it works, so the animation and the elapsed timer stay live during a
+            blocking Ollama call (Streamlit cannot repaint from a blocked main thread).
+            """
+            import concurrent.futures
+            t0 = time.time()
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(fn, *args)
+                while not future.done():
+                    render_agent_panel(idx, completed_steps, message,
+                                       elapsed=time.time() - t0, durations=stage_durations)
+                    time.sleep(0.35)
+                result = future.result()
+            stage_durations[idx] = time.time() - t0
+            completed_steps.append(idx)
+            render_agent_panel(idx + 1 if idx < 4 else -1, completed_steps,
+                               message, durations=stage_durations)
+            return result
+
         render_agent_panel(0, completed_steps, "Parsing biomarker patterns and demographic fields...")
-        health_profile = build_health_profile(st.session_state["raw_pdf_text"])
+        health_profile = run_stage(0, "Extracting demographics and 25+ biomarker values from the report...",
+                                   build_health_profile, st.session_state["raw_pdf_text"])
         health_profile["demographics"].update({"name": p_name, "age": p_age, "gender": p_gender, "weight_kg": p_weight, "height_cm": p_height, "bmi": dyn_bmi, "bp_string": p_bp, "dietary_preference": diet_pref, "allergies": allergies, "activity_level": activity_level})
-        time.sleep(0.3); completed_steps.append(0)
 
-        render_agent_panel(1, completed_steps, "Computing Mifflin-St Jeor BMR, TDEE, and biomarker-specific macro split...")
-        nutrition_protocol = compute_clinical_nutrition_protocol(health_profile)
-        time.sleep(0.3); completed_steps.append(1)
+        nutrition_protocol = run_stage(1, "Computing Mifflin-St Jeor BMR, TDEE and the biomarker-specific macro split...",
+                                       compute_clinical_nutrition_protocol, health_profile)
 
-        render_agent_panel(2, completed_steps, f"Agent 01 querying {ollama_model} for pathological risk stratification...")
-        analysis_output = AnalysisAgent(client).run(health_profile)
-        completed_steps.append(2)
+        analysis_output = run_stage(2, f"Agent 01 querying {ollama_model} for pathophysiological risk stratification...",
+                                    AnalysisAgent(client).run, health_profile)
 
-        render_agent_panel(3, completed_steps, f"Agent 03 generating 7-day precision nutrition protocol via {ollama_model}...")
-        diet_output = NutritionAgent(client).run(health_profile, analysis_output, nutrition_protocol)
-        completed_steps.append(3)
+        diet_output = run_stage(3, f"Agent 03 generating the NIN-grounded 7-day nutrition protocol via {ollama_model}...",
+                                NutritionAgent(client).run, health_profile, analysis_output, nutrition_protocol)
 
-        render_agent_panel(4, completed_steps, f"Agent 02 running contraindication audit and composing Doctor Brief via {ollama_model}...")
-        evaluation_output = EvaluationAgent(client).run(health_profile, analysis_output, diet_output, nutrition_protocol)
-        completed_steps.append(4)
+        evaluation_output = run_stage(4, f"Agent 02 running the contraindication audit and Doctor Brief via {ollama_model}...",
+                                      EvaluationAgent(client).run, health_profile, analysis_output, diet_output, nutrition_protocol)
 
-        render_agent_panel(-1, completed_steps, "All agents completed. Clinical report verified and compiled.")
-        time.sleep(0.4)
+        total_secs = sum(stage_durations.values())
+        render_agent_panel(-1, completed_steps,
+                           f"All 5 stages completed in {total_secs:.1f}s. Clinical report verified and compiled.",
+                           durations=stage_durations)
+        time.sleep(0.8)
         st.session_state["pipeline_results"] = {"health_profile": health_profile, "nutrition_protocol": nutrition_protocol, "analysis_output": analysis_output, "diet_output": diet_output, "evaluation_output": evaluation_output, "source_name": st.session_state.get("source_name")}
         agent_panel.empty()
         st.rerun()
@@ -1176,13 +1424,50 @@ with st.sidebar:
         ollama_model = selected_model
 
     client = OllamaClient(base_url=ollama_url, model=ollama_model)
+    is_conn, conn_msg, models = client.check_connection()
+    # check_connection() reports True whenever the server answers, even if the model
+    # is missing -- so confirm the model itself before claiming AI is active.
+    model_ready = bool(models) and (
+        ollama_model in models or any(ollama_model.split(":")[0] in m for m in models)
+    )
 
-    if st.button("Verify Connection", use_container_width=True):
-        is_conn, msg, models = client.check_connection()
+    if is_conn and not model_ready:
+        st.markdown(
+            '<div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:6px; padding:6px 10px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">'
+            '<span style="color:#D97706; font-weight:bold;">●</span>'
+            f'<span style="font-size:0.75rem; font-weight:600; color:#92400E;">SERVER UP, MODEL \'{ollama_model}\' MISSING</span>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+        st.caption(f"Run `ollama pull {ollama_model}` to enable live AI.")
+    elif is_conn:
+        st.markdown(
+            '<div style="background:#ECFDF5; border:1px solid #A7F3D0; border-radius:6px; padding:6px 10px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">'
+            '<span style="color:#059669; font-weight:bold;">●</span>'
+            '<span style="font-size:0.75rem; font-weight:600; color:#065F46;">OLLAMA ONLINE (AI Active)</span>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            '<div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:6px; padding:6px 10px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">'
+            '<span style="color:#D97706; font-weight:bold;">●</span>'
+            '<span style="font-size:0.75rem; font-weight:600; color:#92400E;">OFFLINE FALLBACK MODE</span>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+    if st.button("Check / Refresh Connection", use_container_width=True):
         if is_conn:
-            st.success(msg)
+            st.success(f"Connected! Available models: {', '.join(models) if models else 'None'}")
         else:
-            st.error(msg)
+            st.warning(
+                "Ollama is not running. The platform is functioning in **Offline Fallback Mode** (Deterministic Calculations + Clinical Templates).\n\n"
+                "To enable live Qwen2.5 AI:\n"
+                "1. Download from [ollama.com](https://ollama.com)\n"
+                "2. Run `ollama pull qwen2.5:7b`\n"
+                "3. Run `ollama serve`"
+            )
 
     st.divider()
 
