@@ -4,6 +4,8 @@ I built NutriAgent to turn a blood-test PDF into something a person can actually
 
 It runs on my own machine. The numbers come from a deterministic rules engine, and a local Qwen2.5 model (through Ollama) only writes the explanations around them. Nothing is sent to a cloud API. There is also a standalone Android app that does the whole thing on the phone.
 
+**Live demo: [nutriagent-ai.streamlit.app](https://nutriagent-ai.streamlit.app/)**. It runs the engine only, on a synthetic sample report, with no language model attached, so its written text comes from built-in templates. The full app with Qwen2.5 runs locally (see below).
+
 > **Educational project, not a medical device.** It gives general nutrition information worked out from the values in a report. It does not diagnose or treat anything. Anything it produces should be reviewed by a doctor or registered dietitian before you act on it.
 
 | Web app (Streamlit) | Android app |
@@ -76,7 +78,7 @@ docker compose up -d --build     # UI on http://localhost:8501, expects Ollama o
 
 For a hosted copy with no model attached, set `DEMO_MODE=1`. It turns off uploads and loads the synthetic sample report from a button, replaces the two pages that need Ollama with a short note, never contacts a model, and labels the app a public demo instead of "100% Local & Private". Everything else (extraction, the calorie and macro engine, the 7-day NIN plan, the compliance check) runs as normal, and the AI-written text falls back to the built-in templates.
 
-To host it on Streamlit Community Cloud, create a new app from this repo with `app.py` as the main file and add `DEMO_MODE = "1"` under the app's secrets. Leave the variable unset locally and nothing changes.
+The live demo above is this mode, hosted on Streamlit Community Cloud. To host your own, create a new app from this repo with `app.py` as the main file and add `DEMO_MODE = "1"` under the app's secrets. Leave the variable unset locally and nothing changes.
 
 ### Android app
 
