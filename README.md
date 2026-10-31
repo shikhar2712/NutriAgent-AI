@@ -72,6 +72,12 @@ With Docker:
 docker compose up -d --build     # UI on http://localhost:8501, expects Ollama on localhost:11434
 ```
 
+### Public demo mode
+
+For a hosted copy with no model attached, set `DEMO_MODE=1`. It turns off uploads and loads the synthetic sample report from a button, replaces the two pages that need Ollama with a short note, never contacts a model, and labels the app a public demo instead of "100% Local & Private". Everything else (extraction, the calorie and macro engine, the 7-day NIN plan, the compliance check) runs as normal, and the AI-written text falls back to the built-in templates.
+
+To host it on Streamlit Community Cloud, create a new app from this repo with `app.py` as the main file and add `DEMO_MODE = "1"` under the app's secrets. Leave the variable unset locally and nothing changes.
+
 ### Android app
 
 `mobile/` holds a standalone port: the extraction, nutrition engine, NIN tables and plan builder run in JavaScript inside a small native WebView shell, and the PDF is read on the phone with a bundled pdf.js. Ollama is optional there too.

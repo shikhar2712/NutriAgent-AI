@@ -16,6 +16,21 @@ from extractor import extract_text_from_pdf, build_health_profile, STANDARD_REFE
 from deterministic_nutrition import compute_clinical_nutrition_protocol
 from agents import OllamaClient, AnalysisAgent, NutritionAgent, EvaluationAgent, ConsultantAgent, SingleLLMBaseline
 
+# Public-demo switch. A hosted copy has no Ollama, so DEMO_MODE=1 turns off uploads and the
+# pages that need a model, and says so in the UI. Off by default; the local app is unchanged.
+DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes")
+GITHUB_URL = "https://github.com/shikhar2712/NutriAgent-AI"
+
+
+class DemoClient(OllamaClient):
+    """Stand-in for the public demo: makes no network calls, so every agent uses its template fallback."""
+
+    def check_connection(self):
+        return False, "No language model is attached to this public demo.", []
+
+    def generate(self, prompt, system_prompt="", temperature=0.3):
+        raise RuntimeError("no language model is attached to this public demo")
+
 # Page configuration
 st.set_page_config(
     page_title="NutriAgent AI | Precision Clinical Nutrition",
@@ -870,6 +885,20 @@ def render_nutriagent_model_page(client: OllamaClient, ollama_model: str, diet_p
         </div>
         """, unsafe_allow_html=True)
 
+        if DEMO_MODE:
+            if st.button("Load the synthetic sample report", type="primary", use_container_width=True):
+                sample_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample_blood_test_report.pdf")
+                with open(sample_path, "rb") as fh:
+                    raw_text, _tables = extract_text_from_pdf(io.BytesIO(fh.read()))
+                st.session_state["raw_pdf_text"] = raw_text
+                st.session_state["source_name"] = "sample_blood_test_report.pdf"
+                st.rerun()
+            st.caption("The sample is a synthetic patient. Uploads are disabled in the public demo.")
+            st.divider()
+            st.info("The Single LLM vs NutriAgent comparison needs a language model, so it is not part of the public demo. "
+                    "Run the app locally to try it, or see the screenshots in the README.")
+            return
+
         uploaded_file = st.file_uploader(
             "Upload Clinical Laboratory Report (PDF)",
             type=["pdf"],
@@ -1414,18 +1443,24 @@ Plan Compliance Score: {evaluation_output.get('compliance_score', 0)}/100 (const
 with st.sidebar:
     st.markdown("### System Configuration")
 
-    st.caption("LLM RUNTIME (OLLAMA)")
-    ollama_url = st.text_input("Endpoint", value="http://localhost:11434", label_visibility="collapsed")
-
-    model_options = ["qwen2.5:7b", "qwen2.5:14b", "qwen2.5:32b", "qwen2.5:latest", "Custom"]
-    selected_model = st.selectbox("Active Model", options=model_options, index=0)
-
-    if selected_model == "Custom":
-        ollama_model = st.text_input("Model Identifier", value="qwen2.5:7b")
+    if DEMO_MODE:
+        st.caption("AI MODEL")
+        st.info("Not attached in the public demo. The engine runs as normal and the AI-written text uses built-in templates.")
+        ollama_model = "qwen2.5:7b"
+        client = DemoClient(model=ollama_model)
     else:
-        ollama_model = selected_model
+        st.caption("LLM RUNTIME (OLLAMA)")
+        ollama_url = st.text_input("Endpoint", value="http://localhost:11434", label_visibility="collapsed")
 
-    client = OllamaClient(base_url=ollama_url, model=ollama_model)
+        model_options = ["qwen2.5:7b", "qwen2.5:14b", "qwen2.5:32b", "qwen2.5:latest", "Custom"]
+        selected_model = st.selectbox("Active Model", options=model_options, index=0)
+
+        if selected_model == "Custom":
+            ollama_model = st.text_input("Model Identifier", value="qwen2.5:7b")
+        else:
+            ollama_model = selected_model
+
+        client = OllamaClient(base_url=ollama_url, model=ollama_model)
     is_conn, conn_msg, models = client.check_connection()
     # check_connection() reports True whenever the server answers, even if the model
     # is missing -- so confirm the model itself before claiming AI is active.
@@ -1454,12 +1489,12 @@ with st.sidebar:
         st.markdown(
             '<div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:6px; padding:6px 10px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">'
             '<span style="color:#D97706; font-weight:bold;">●</span>'
-            '<span style="font-size:0.75rem; font-weight:600; color:#92400E;">OFFLINE FALLBACK MODE</span>'
+            f'<span style="font-size:0.75rem; font-weight:600; color:#92400E;">{"DEMO MODE: ENGINE ONLY" if DEMO_MODE else "OFFLINE FALLBACK MODE"}</span>'
             '</div>',
             unsafe_allow_html=True
         )
 
-    if st.button("Check / Refresh Connection", use_container_width=True):
+    if not DEMO_MODE and st.button("Check / Refresh Connection", use_container_width=True):
         if is_conn:
             st.success(f"Connected! Available models: {', '.join(models) if models else 'None'}")
         else:
@@ -1526,13 +1561,15 @@ with st.sidebar:
 # ==========================================
 # HEADER
 # ==========================================
-st.markdown("""
+_privacy_badge = ('<span class="app-badge-private">Public demo: sample data only</span>' if DEMO_MODE
+                  else '<span class="app-badge-private">100% Local & Private</span>')
+st.markdown(f"""
 <div class="app-header">
     <div class="app-title-group">
         <div class="app-title">
             NutriAgent AI
             <span class="app-badge">Production v2.4</span>
-            <span class="app-badge-private">100% Local & Private</span>
+            {_privacy_badge}
         </div>
         <div class="app-subtitle">
             Turn raw medical lab reports into verified 7-day precision nutrition therapy and doctor briefs.
@@ -1541,6 +1578,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+if DEMO_MODE:
+    st.info("**Public demo, sample data only.** This hosted copy runs the deterministic engine: extraction, the calorie and macro "
+            "maths, the 7-day NIN plan and the compliance check. No language model is attached, so the AI-written text is replaced "
+            "by built-in templates. Uploads are turned off, so please don't enter real health information. The full app, with "
+            f"local Qwen2.5 models, runs on your own machine: [GitHub]({GITHUB_URL}).")
 
 # Initialize Session State
 if "raw_pdf_text" not in st.session_state:
@@ -1590,7 +1633,10 @@ st.markdown("<hr style='margin: 12px 0 20px 0; border-color: #E2E8F0;'>", unsafe
 # ==========================================
 # ROUTE TO SELECTED MODE
 # ==========================================
-if st.session_state["app_mode"] == "LLM Model":
+if st.session_state["app_mode"] == "LLM Model" and DEMO_MODE:
+    st.info("This baseline page talks directly to a local Qwen2.5 model, which the public demo does not have. "
+            "Run the app locally to use it.")
+elif st.session_state["app_mode"] == "LLM Model":
     render_llm_model_page(client)
 else:
     render_nutriagent_model_page(client, ollama_model, diet_pref, allergies, activity_level)
