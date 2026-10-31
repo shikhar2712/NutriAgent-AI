@@ -1,0 +1,1078 @@
+{
+  "source": "Dietary Guidelines for Indians - National Institute of Nutrition (ICMR), Hyderabad",
+  "food_tables_source": "Nutritive Value of Indian Foods, 1989 (as reproduced in NIN annexures)",
+  "nuts_salads_fruits": [
+    {
+      "food": "Almonds",
+      "portion": "10 Nos.",
+      "kcal": 85,
+      "category": "Nuts"
+    },
+    {
+      "food": "Cashewnuts",
+      "portion": "10 Nos.",
+      "kcal": 95,
+      "category": "Nuts"
+    },
+    {
+      "food": "Coconut (fresh)",
+      "portion": "100 g",
+      "kcal": 444,
+      "category": "Nuts"
+    },
+    {
+      "food": "Coconut (dry)",
+      "portion": "100 g",
+      "kcal": 662,
+      "category": "Nuts"
+    },
+    {
+      "food": "Peanuts",
+      "portion": "50 Nos.",
+      "kcal": 90,
+      "category": "Nuts"
+    },
+    {
+      "food": "Apple",
+      "portion": "1 medium",
+      "kcal": 65,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Banana",
+      "portion": "1 medium",
+      "kcal": 90,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Grapes",
+      "portion": "30 Nos.",
+      "kcal": 70,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Guava",
+      "portion": "1 medium",
+      "kcal": 50,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Jackfruit",
+      "portion": "4 pieces",
+      "kcal": 90,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Mango",
+      "portion": "1 medium",
+      "kcal": 180,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Mosambi/orange",
+      "portion": "1 medium",
+      "kcal": 40,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Papaya",
+      "portion": "1 piece",
+      "kcal": 80,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Pineapple",
+      "portion": "1 piece",
+      "kcal": 50,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Sapota",
+      "portion": "1 medium",
+      "kcal": 80,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Custard apple",
+      "portion": "1 medium",
+      "kcal": 130,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Watermelon/muskmelon",
+      "portion": "1 slice",
+      "kcal": 15,
+      "category": "Fresh fruits"
+    },
+    {
+      "food": "Beetroot",
+      "portion": "1 medium",
+      "kcal": 30,
+      "category": "Salads"
+    },
+    {
+      "food": "Carrot",
+      "portion": "1 medium",
+      "kcal": 70,
+      "category": "Salads"
+    },
+    {
+      "food": "Cucumber",
+      "portion": "1 medium",
+      "kcal": 12,
+      "category": "Salads"
+    },
+    {
+      "food": "Onion",
+      "portion": "1 medium",
+      "kcal": 25,
+      "category": "Salads"
+    },
+    {
+      "food": "Radish",
+      "portion": "1 medium",
+      "kcal": 10,
+      "category": "Salads"
+    },
+    {
+      "food": "Tomato",
+      "portion": "1 medium",
+      "kcal": 10,
+      "category": "Salads"
+    }
+  ],
+  "cooked_preparations": [
+    {
+      "food": "Rice",
+      "portion": "1 cup",
+      "kcal": 170,
+      "category": "Cereal"
+    },
+    {
+      "food": "Phulka",
+      "portion": "1 No.",
+      "kcal": 80,
+      "category": "Cereal"
+    },
+    {
+      "food": "Paratha",
+      "portion": "1 No.",
+      "kcal": 150,
+      "category": "Cereal"
+    },
+    {
+      "food": "Puri",
+      "portion": "1 No.",
+      "kcal": 80,
+      "category": "Cereal"
+    },
+    {
+      "food": "Bread",
+      "portion": "2 slices",
+      "kcal": 170,
+      "category": "Cereal"
+    },
+    {
+      "food": "Poha",
+      "portion": "1 cup",
+      "kcal": 270,
+      "category": "Cereal"
+    },
+    {
+      "food": "Upma",
+      "portion": "1 cup",
+      "kcal": 270,
+      "category": "Cereal"
+    },
+    {
+      "food": "Idli",
+      "portion": "2 Nos.",
+      "kcal": 150,
+      "category": "Cereal"
+    },
+    {
+      "food": "Dosa",
+      "portion": "1 No.",
+      "kcal": 125,
+      "category": "Cereal"
+    },
+    {
+      "food": "Kichidi",
+      "portion": "1 cup",
+      "kcal": 200,
+      "category": "Cereal"
+    },
+    {
+      "food": "Wheat porridge",
+      "portion": "1 cup",
+      "kcal": 220,
+      "category": "Cereal"
+    },
+    {
+      "food": "Semolina porridge",
+      "portion": "1 cup",
+      "kcal": 220,
+      "category": "Cereal"
+    },
+    {
+      "food": "Cereal flakes with milk",
+      "portion": "1 cup",
+      "kcal": 220,
+      "category": "Cereal"
+    },
+    {
+      "food": "Plain dhal",
+      "portion": "½ cup",
+      "kcal": 100,
+      "category": "Pulse"
+    },
+    {
+      "food": "Sambar",
+      "portion": "1 cup",
+      "kcal": 110,
+      "category": "Pulse"
+    },
+    {
+      "food": "With gravy",
+      "portion": "1 cup",
+      "kcal": 170,
+      "category": "Vegetable"
+    },
+    {
+      "food": "Dry",
+      "portion": "1 cup",
+      "kcal": 150,
+      "category": "Vegetable"
+    },
+    {
+      "food": "Boiled egg",
+      "portion": "1 No.",
+      "kcal": 90,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Ommelette",
+      "portion": "1 No.",
+      "kcal": 160,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Fried egg",
+      "portion": "1 No.",
+      "kcal": 160,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Mutton curry",
+      "portion": "¾ cup",
+      "kcal": 260,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Chicken curry",
+      "portion": "¾ cup",
+      "kcal": 240,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Fish fried",
+      "portion": "2 big pieces",
+      "kcal": 190,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Fish cutlet",
+      "portion": "2 Nos.",
+      "kcal": 190,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Prawn curry",
+      "portion": "¾ cup",
+      "kcal": 220,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Keema kofta curry",
+      "portion": "¾ cup (6 small koftas)",
+      "kcal": 240,
+      "category": "Non-Vegetarian"
+    },
+    {
+      "food": "Bajji or pakora",
+      "portion": "8 Nos.",
+      "kcal": 280,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Besan ka pura",
+      "portion": "1 No.",
+      "kcal": 220,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Chat (Dahi-pakori)",
+      "portion": "5 pieces",
+      "kcal": 220,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Cheese balls",
+      "portion": "2 Nos.",
+      "kcal": 250,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Dahi vada",
+      "portion": "2 Nos.",
+      "kcal": 180,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Vada",
+      "portion": "2 Nos.",
+      "kcal": 140,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Masala vada",
+      "portion": "2 Nos.",
+      "kcal": 150,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Masala dosa",
+      "portion": "1 No.",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Pea-kachori",
+      "portion": "2 Nos.",
+      "kcal": 380,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Potato bonda",
+      "portion": "2 Nos.",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Sago vada",
+      "portion": "2 Nos.",
+      "kcal": 210,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Samosa",
+      "portion": "1 No.",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Sandwiches (butter -2tbsp)",
+      "portion": "2 Nos.",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Vegetable puff",
+      "portion": "1 No.",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Pizza (Cheese and tomato)",
+      "portion": "1 slice",
+      "kcal": 200,
+      "category": "Savoury snacks"
+    },
+    {
+      "food": "Coconut/groundnuts/til",
+      "portion": "2 tbsp",
+      "kcal": 120,
+      "category": "Chutneys"
+    },
+    {
+      "food": "Tomato",
+      "portion": "1 tbsp",
+      "kcal": 10,
+      "category": "Chutneys"
+    },
+    {
+      "food": "Tamarind (withjaggery)",
+      "portion": "1 tbsp",
+      "kcal": 60,
+      "category": "Chutneys"
+    },
+    {
+      "food": "Besan barfi",
+      "portion": "2 small pieces",
+      "kcal": 400,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Chikki",
+      "portion": "2 pieces",
+      "kcal": 290,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Fruit cake",
+      "portion": "1 piece",
+      "kcal": 270,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Rice puttu",
+      "portion": "½ cup",
+      "kcal": 280,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Sandesh",
+      "portion": "2 Nos.",
+      "kcal": 140,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Double ka meetha",
+      "portion": "½ cup",
+      "kcal": 280,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Halwa (kesari)",
+      "portion": "½ cup",
+      "kcal": 320,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Jelly/Jam",
+      "portion": "1 tbsp",
+      "kcal": 20,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Custard (caramel)",
+      "portion": "½ cup",
+      "kcal": 160,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Srikhand",
+      "portion": "½ cup",
+      "kcal": 380,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Milk chocolate",
+      "portion": "25 g",
+      "kcal": 140,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Ice-cream",
+      "portion": "½ cup",
+      "kcal": 200,
+      "category": "Sweets and Desserts"
+    },
+    {
+      "food": "Tea(2 tsp sugar + 50 ml toned milk)",
+      "portion": "1 cup",
+      "kcal": 75,
+      "category": "Beverages"
+    },
+    {
+      "food": "Coffee (2 tsp sugar + 100 ml)",
+      "portion": "1 cup",
+      "kcal": 110,
+      "category": "Beverages"
+    },
+    {
+      "food": "Cow's milk (2 tsp sugar)",
+      "portion": "1 cup",
+      "kcal": 180,
+      "category": "Beverages"
+    },
+    {
+      "food": "Buffalo's milk (2 tsp sugar)",
+      "portion": "1 cup",
+      "kcal": 320,
+      "category": "Beverages"
+    },
+    {
+      "food": "Lassi (2 tsp sugar)",
+      "portion": "1 cup/glass (200 ml)",
+      "kcal": 110,
+      "category": "Beverages"
+    },
+    {
+      "food": "Squash",
+      "portion": "1 cup/glass",
+      "kcal": 75,
+      "category": "Beverages"
+    },
+    {
+      "food": "Syrups (Sharabats)",
+      "portion": "1 cup/glass",
+      "kcal": 200,
+      "category": "Beverages"
+    },
+    {
+      "food": "Cold drinks",
+      "portion": "1 bottle (200 ml)",
+      "kcal": 150,
+      "category": "Beverages"
+    },
+    {
+      "food": "Fresh lime juice",
+      "portion": "1 glass",
+      "kcal": 60,
+      "category": "Beverages"
+    }
+  ],
+  "low_calorie_produce": [
+    {
+      "food": "Amaranth (stem)",
+      "portion": "100 g",
+      "kcal": 19,
+      "category": "GLV"
+    },
+    {
+      "food": "Ambat chukka",
+      "portion": "100 g",
+      "kcal": 15,
+      "category": "GLV"
+    },
+    {
+      "food": "Celery stalk",
+      "portion": "100 g",
+      "kcal": 18,
+      "category": "GLV"
+    },
+    {
+      "food": "Spinach stalk",
+      "portion": "100 g",
+      "kcal": 20,
+      "category": "GLV"
+    },
+    {
+      "food": "Radish table",
+      "portion": "100 g",
+      "kcal": 16,
+      "category": "Roots and tubers"
+    },
+    {
+      "food": "Radish white",
+      "portion": "100 g",
+      "kcal": 17,
+      "category": "Roots and tubers"
+    },
+    {
+      "food": "Ash gourd",
+      "portion": "100 g",
+      "kcal": 10,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Bottle gourd",
+      "portion": "100 g",
+      "kcal": 12,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Cluster beans",
+      "portion": "100 g",
+      "kcal": 16,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Colocasia stem",
+      "portion": "100 g",
+      "kcal": 18,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Cucumber",
+      "portion": "100 g",
+      "kcal": 13,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Ghosala",
+      "portion": "100 g",
+      "kcal": 18,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Kovai",
+      "portion": "100 g",
+      "kcal": 18,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Parwal",
+      "portion": "100 g",
+      "kcal": 20,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Ridge guard",
+      "portion": "100 g",
+      "kcal": 17,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Snake guard",
+      "portion": "100 g",
+      "kcal": 18,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Vegetable marrow",
+      "portion": "100 g",
+      "kcal": 17,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Bilimbi",
+      "portion": "100 g",
+      "kcal": 19,
+      "category": "Fruits"
+    },
+    {
+      "food": "Jamb safed",
+      "portion": "100 g",
+      "kcal": 19,
+      "category": "Fruits"
+    },
+    {
+      "food": "Musk melon",
+      "portion": "100 g",
+      "kcal": 17,
+      "category": "Fruits"
+    },
+    {
+      "food": "Water melon",
+      "portion": "100 g",
+      "kcal": 16,
+      "category": "Fruits"
+    },
+    {
+      "food": "Orange juice",
+      "portion": "100 g",
+      "kcal": 9,
+      "category": "Fruits"
+    },
+    {
+      "food": "Tomato ripe",
+      "portion": "100 g",
+      "kcal": 20,
+      "category": "Fruits"
+    }
+  ],
+  "high_calorie_produce": [
+    {
+      "food": "Chekkur manis",
+      "portion": "100 g",
+      "kcal": 103,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Colocasia leaves (dried)",
+      "portion": "100 g",
+      "kcal": 277,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Curry leaves",
+      "portion": "100 g",
+      "kcal": 108,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Fetid cassia (dried) (Chakunda)",
+      "portion": "100 g",
+      "kcal": 292,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Rape leaves (dried)",
+      "portion": "100 g",
+      "kcal": 297,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Tamarind leaves",
+      "portion": "100 g",
+      "kcal": 115,
+      "category": "Leafy vegetables"
+    },
+    {
+      "food": "Arrow root flour",
+      "portion": "100 g",
+      "kcal": 334,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Parsnip",
+      "portion": "100 g",
+      "kcal": 101,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Sweet potato",
+      "portion": "100 g",
+      "kcal": 120,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Tapioca",
+      "portion": "100 g",
+      "kcal": 157,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Yam ordinary",
+      "portion": "100 g",
+      "kcal": 111,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Yam wild",
+      "portion": "100 g",
+      "kcal": 110,
+      "category": "Roots & Tubers"
+    },
+    {
+      "food": "Beans, scarlet runner",
+      "portion": "100 g",
+      "kcal": 158,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Jack fruit, seeds",
+      "portion": "100 g",
+      "kcal": 133,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Karonda (dry)",
+      "portion": "100 g",
+      "kcal": 364,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Lotus stem (dry)",
+      "portion": "100 g",
+      "kcal": 234,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Sundakai (dry)",
+      "portion": "100 g",
+      "kcal": 269,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Water chestnut (fresh)",
+      "portion": "100 g",
+      "kcal": 115,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Water chestnut (dry)",
+      "portion": "100 g",
+      "kcal": 330,
+      "category": "Other vegetables"
+    },
+    {
+      "food": "Apricot (dry)",
+      "portion": "100 g",
+      "kcal": 306,
+      "category": "Fruits"
+    },
+    {
+      "food": "Avacado pear",
+      "portion": "100 g",
+      "kcal": 215,
+      "category": "Fruits"
+    },
+    {
+      "food": "Banana",
+      "portion": "100 g",
+      "kcal": 116,
+      "category": "Fruits"
+    },
+    {
+      "food": "Bael fruit",
+      "portion": "100 g",
+      "kcal": 116,
+      "category": "Fruits"
+    },
+    {
+      "food": "Currants, red",
+      "portion": "100 g",
+      "kcal": 316,
+      "category": "Fruits"
+    },
+    {
+      "food": "Dates (dried)",
+      "portion": "100 g",
+      "kcal": 317,
+      "category": "Fruits"
+    },
+    {
+      "food": "Dates fresh",
+      "portion": "100 g",
+      "kcal": 144,
+      "category": "Fruits"
+    },
+    {
+      "food": "Mahua (ripe)",
+      "portion": "100 g",
+      "kcal": 111,
+      "category": "Fruits"
+    },
+    {
+      "food": "Raisins",
+      "portion": "100 g",
+      "kcal": 308,
+      "category": "Fruits"
+    },
+    {
+      "food": "Seetaphal",
+      "portion": "100 g",
+      "kcal": 104,
+      "category": "Fruits"
+    },
+    {
+      "food": "Wood apple",
+      "portion": "100 g",
+      "kcal": 134,
+      "category": "Fruits"
+    }
+  ],
+  "glycemic_index": [
+    {
+      "food": "White wheat bread",
+      "glycemic_index": 75
+    },
+    {
+      "food": "Mango (raw)",
+      "glycemic_index": 51
+    },
+    {
+      "food": "Whole wheat bread",
+      "glycemic_index": 74
+    },
+    {
+      "food": "Watermelon (raw)",
+      "glycemic_index": 76
+    },
+    {
+      "food": "Wheat roti",
+      "glycemic_index": 62
+    },
+    {
+      "food": "Potato (boiled)",
+      "glycemic_index": 78
+    },
+    {
+      "food": "Chappathi",
+      "glycemic_index": 52
+    },
+    {
+      "food": "French fries (potato)",
+      "glycemic_index": 63
+    },
+    {
+      "food": "White boiled rice",
+      "glycemic_index": 73
+    },
+    {
+      "food": "Carrots (boiled)",
+      "glycemic_index": 39
+    },
+    {
+      "food": "Brown boiled rice",
+      "glycemic_index": 68
+    },
+    {
+      "food": "Milk (full fat)",
+      "glycemic_index": 39
+    },
+    {
+      "food": "Barley",
+      "glycemic_index": 28
+    },
+    {
+      "food": "Milk (skim)",
+      "glycemic_index": 37
+    },
+    {
+      "food": "Instant oat porridge",
+      "glycemic_index": 79
+    },
+    {
+      "food": "Ice cream",
+      "glycemic_index": 51
+    },
+    {
+      "food": "Rice porridge /congee",
+      "glycemic_index": 78
+    },
+    {
+      "food": "Chick peas",
+      "glycemic_index": 28
+    },
+    {
+      "food": "Millet porridge",
+      "glycemic_index": 67
+    },
+    {
+      "food": "Soya beans",
+      "glycemic_index": 16
+    },
+    {
+      "food": "Sweet corn",
+      "glycemic_index": 52
+    },
+    {
+      "food": "Lentils",
+      "glycemic_index": 32
+    },
+    {
+      "food": "Cornflakes",
+      "glycemic_index": 81
+    },
+    {
+      "food": "Chocolate",
+      "glycemic_index": 40
+    },
+    {
+      "food": "Apple (raw)",
+      "glycemic_index": 36
+    },
+    {
+      "food": "Popcorn",
+      "glycemic_index": 65
+    },
+    {
+      "food": "Orange",
+      "glycemic_index": 43
+    },
+    {
+      "food": "Soft drinks/soda",
+      "glycemic_index": 59
+    },
+    {
+      "food": "Banana",
+      "glycemic_index": 51
+    },
+    {
+      "food": "Honey",
+      "glycemic_index": 61
+    },
+    {
+      "food": "Pineapple",
+      "glycemic_index": 59
+    },
+    {
+      "food": "Glucose",
+      "glycemic_index": 103
+    }
+  ],
+  "portion_macros": [
+    {
+      "food_group": "Cereals & millets",
+      "g_per_portion": 30,
+      "kcal": 100.0,
+      "protein_g": 3.0,
+      "carb_g": 20.0,
+      "fat_g": 0.8
+    },
+    {
+      "food_group": "Pulses",
+      "g_per_portion": 30,
+      "kcal": 100.0,
+      "protein_g": 6.0,
+      "carb_g": 15.0,
+      "fat_g": 0.7
+    },
+    {
+      "food_group": "Egg",
+      "g_per_portion": 50,
+      "kcal": 85.0,
+      "protein_g": 7.0,
+      "carb_g": null,
+      "fat_g": 7.0
+    },
+    {
+      "food_group": "Meat/chicken/ fish",
+      "g_per_portion": 50,
+      "kcal": 100.0,
+      "protein_g": 9.0,
+      "carb_g": null,
+      "fat_g": 7.0
+    },
+    {
+      "food_group": "Milk (ml)& milk products",
+      "g_per_portion": 100,
+      "kcal": 70.0,
+      "protein_g": 3.0,
+      "carb_g": 5.0,
+      "fat_g": 3.0
+    },
+    {
+      "food_group": "Roots & Tubers",
+      "g_per_portion": 100,
+      "kcal": 80.0,
+      "protein_g": 1.3,
+      "carb_g": 18.0,
+      "fat_g": null
+    },
+    {
+      "food_group": "Green leafy vegetables",
+      "g_per_portion": 100,
+      "kcal": 46.0,
+      "protein_g": 3.6,
+      "carb_g": null,
+      "fat_g": 0.4
+    },
+    {
+      "food_group": "Other vegetables",
+      "g_per_portion": 100,
+      "kcal": 28.0,
+      "protein_g": 1.7,
+      "carb_g": null,
+      "fat_g": 0.2
+    },
+    {
+      "food_group": "Fruits",
+      "g_per_portion": 100,
+      "kcal": 40.0,
+      "protein_g": null,
+      "carb_g": 10.0,
+      "fat_g": null
+    },
+    {
+      "food_group": "Sugar",
+      "g_per_portion": 5,
+      "kcal": 20.0,
+      "protein_g": null,
+      "carb_g": 5.0,
+      "fat_g": null
+    },
+    {
+      "food_group": "Fat & Oils (visible)",
+      "g_per_portion": 5,
+      "kcal": 45.0,
+      "protein_g": null,
+      "carb_g": null,
+      "fat_g": 5.0
+    }
+  ]
+}
